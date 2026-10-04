@@ -77,14 +77,18 @@ font-family:'VT323',monospace;font-size:15px;color:var(--offwhite);opacity:.4;le
 .cabinet-label{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-family:'Press Start 2P';font-size:10px;letter-spacing:2px;color:var(--cyan);background:var(--screen);padding:2px 10px;border-radius:6px;z-index:2;}
 .screen{position:relative;width:100%;height:100%;border-radius:10px;overflow:hidden;background:var(--screen);}
 canvas{display:block;width:100%;height:100%;image-rendering:pixelated;}
-.scanlines{position:absolute;inset:0;pointer-events:none;z-index:30;opacity:.3;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.16) 0 1px,transparent 2px 3px);mix-blend-mode:multiply;}
+/* [PERF-20] УБРАН mix-blend-mode:multiply — он заставлял браузер каждый кадр заново
+   смешивать полноэкранный слой с анимирующимся canvas (одна из главных причин лагов на
+   мобильных). Обычная полупрозрачная сетка выглядит почти так же, но стоит копейки. */
+.scanlines{position:absolute;inset:0;pointer-events:none;z-index:30;opacity:.22;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.28) 0 1px,transparent 2px 3px);}
+/* [PERF-20] Виньетка теперь отключаема: в режиме PERFORMANCE/lowfx слой не рисуется вовсе. */
 .vignette{position:absolute;inset:0;pointer-events:none;z-index:3;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.5));}
 .errbar{position:absolute;top:0;left:0;right:0;z-index:999;background:#FF4757;color:#fff;font:11px monospace;padding:6px;white-space:pre-wrap;text-align:left;display:none;}
 .hud{position:absolute;top:10px;left:0;right:0;z-index:5;display:flex;justify-content:space-between;padding:0 14px;font-family:'Press Start 2P';font-size:11px;color:var(--offwhite);text-shadow:0 2px 0 rgba(0,0,0,.55);pointer-events:none;}
 .hud .best{color:var(--amber);}
 /* [PERF] HUD-плашки видны 100% времени в игре — снимаем backdrop-filter (см. ниже),
    компенсируя непрозрачностью фона, чтобы читаемость не пострадала. */
-.overlay{position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;padding:16px;background:var(--overlay);backdrop-filter:blur(3px);animation:ovIn .22s ease;}
+.overlay{position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;padding:16px;background:var(--overlay);animation:ovIn .22s ease;}
 @keyframes ovIn{from{opacity:0;transform:scale(.97)}to{opacity:1}}
 .overlay.scroll{overflow-y:auto;justify-content:flex-start;padding-top:26px;scrollbar-width:thin;scrollbar-color:var(--cyan) transparent;}
 .overlay h1{font-family:'Press Start 2P';font-size:17px;margin:0;background:linear-gradient(180deg,var(--cyan) 20%,#8fe8ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 12px rgba(76,241,232,.4));}
@@ -193,7 +197,7 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated;}
 .menu-btn.gold{background:linear-gradient(160deg,var(--amber),#e0a92e);}
 .menu-btn.red{background:linear-gradient(160deg,var(--danger),#c73340);color:#fff;}
 #wheel-cv{width:min(360px,82vw);height:min(360px,82vw);border-radius:50%;box-shadow:0 0 26px rgba(76,241,232,.3),0 0 70px rgba(255,210,76,.18);image-rendering:auto;}
-#wheel-screen{background:radial-gradient(circle at 50% 38%,rgba(22,28,72,.96),rgba(3,5,15,.985) 72%);backdrop-filter:blur(7px);}
+#wheel-screen{background:radial-gradient(circle at 50% 38%,rgba(22,28,72,.97),rgba(3,5,15,.99) 72%);}
 #wheel-screen h1{margin:8px 0 4px;color:var(--amber);text-shadow:0 0 14px rgba(255,210,76,.45);}
 #wheel-screen .wheel-sub{font-size:14px;margin:0 0 8px;color:var(--offwhite);opacity:.9;}
 #wheel-screen .wheel-status{font-size:13px;line-height:1.5;margin:6px 0 10px;color:var(--offwhite);}
@@ -228,7 +232,7 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated;}
 .shop-title-row{display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:2px}.shop-title-row h1{margin-bottom:0!important}.shop-gem{font-size:26px;color:var(--magenta);filter:drop-shadow(0 0 9px var(--magenta))}.shop-screen .swlist{gap:9px!important}.shop-screen .sw{position:relative;width:58px!important;height:62px!important;border-radius:13px!important;box-shadow:inset 0 -8px 0 rgba(0,0,0,.14),0 0 0 1px rgba(255,255,255,.05)}.shop-screen .sw.sel{transform:translateY(-2px);box-shadow:0 0 0 2px var(--cyan),0 0 16px rgba(76,241,232,.25)}.shop-screen .sw u{text-decoration:none;display:block;margin-top:44px;font-size:7px!important}.shop-screen .sw::after{content:'✦';position:absolute;top:5px;right:6px;font-size:8px;color:rgba(255,255,255,.65)}
 </style>
 <style>
-#pause-screen{background:radial-gradient(circle at 50% 28%,rgba(76,241,232,.10),transparent 34%),rgba(3,5,17,.88);backdrop-filter:blur(6px)}
+#pause-screen{background:radial-gradient(circle at 50% 28%,rgba(76,241,232,.10),transparent 34%),rgba(3,5,17,.9);}
 #pause-screen h1{font-size:24px;letter-spacing:3px;text-shadow:0 0 18px rgba(76,241,232,.5)}
 #pause-screen .menu-btn{min-width:210px;box-shadow:0 0 16px rgba(76,241,232,.12)}
 </style>
@@ -313,7 +317,7 @@ body:after{width:240px;height:240px;right:-70px;bottom:8%;background:#ff3d9c}
 .nav-btn .ic{font-size:21px!important;filter:drop-shadow(0 0 8px rgba(255,255,255,.16))}
 
 /* Universal overlays / cards */
-.overlay{padding:18px!important;background:linear-gradient(180deg,rgba(4,6,18,.91),rgba(3,5,15,.94))!important;backdrop-filter:blur(12px)!important}
+.overlay{padding:18px!important;background:linear-gradient(180deg,rgba(4,6,18,.94),rgba(3,5,15,.97))!important}
 .overlay.scroll{overflow-x:hidden!important;padding-top:22px!important}
 .overlay h1{letter-spacing:1px!important;text-shadow:0 0 18px rgba(85,255,244,.24)}
 .menu-btn{border-radius:12px!important;padding:11px 15px!important;box-shadow:0 4px 0 rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.2)!important;transition:.16s!important}
@@ -397,11 +401,11 @@ body:after{width:240px;height:240px;right:-70px;bottom:8%;background:#ff3d9c}
 .wheel-result{padding:7px 14px;border-radius:999px;background:rgba(85,255,244,.06);border:1px solid rgba(85,255,244,.15);min-width:220px}
 
 /* Pause */
-#pause-screen{background:radial-gradient(circle at 50% 30%,rgba(85,255,244,.12),transparent 30%),rgba(3,5,17,.92)!important;backdrop-filter:blur(15px)!important}
+#pause-screen{background:radial-gradient(circle at 50% 30%,rgba(85,255,244,.12),transparent 30%),rgba(3,5,17,.94)!important}
 #pause-screen h1{font-size:26px!important;color:var(--cyan)!important;text-shadow:0 0 22px rgba(85,255,244,.5)!important}
 
 /* Gameplay controls */
-.jump-btn,.duck-btn,.dash-btn{backdrop-filter:blur(8px)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 24px rgba(0,0,0,.28)!important;transition:.12s!important}
+.jump-btn,.duck-btn,.dash-btn{background:rgba(5,7,18,.85);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 24px rgba(0,0,0,.28)!important;transition:.12s!important}
 .jump-btn{border-color:rgba(85,255,244,.85)!important;background:linear-gradient(145deg,rgba(20,45,65,.72),rgba(5,12,28,.7))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 24px rgba(85,255,244,.12),0 8px 24px rgba(0,0,0,.3)!important}
 .duck-btn{border-color:rgba(255,79,163,.85)!important;background:linear-gradient(145deg,rgba(63,24,53,.72),rgba(20,7,25,.7))!important}
 .dash-btn{border-color:rgba(157,140,255,.85)!important;background:linear-gradient(145deg,rgba(39,31,75,.72),rgba(11,8,28,.7))!important}
@@ -501,7 +505,7 @@ html[data-theme=arctic] .screen{box-shadow:inset 0 0 0 1px rgba(15,23,42,.18),in
 .bp-tier .reward{height:48px!important;margin:6px 0!important}
 .bp-legend{padding:8px 10px;border:1px solid rgba(255,255,255,.07);border-radius:12px;background:rgba(255,255,255,.025);line-height:1.45}
 .bp-dot-hide{display:none!important}
-#bp-purchase-modal{position:absolute;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(3,5,17,.82);backdrop-filter:blur(10px)}
+#bp-purchase-modal{position:absolute;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(3,5,17,.9)}
 #bp-purchase-modal.hidden{display:none!important}
 .bp-buy-card{width:min(330px,92%);padding:22px 18px;border:1px solid rgba(255,210,76,.55);border-radius:24px;text-align:center;background:radial-gradient(circle at 50% 0%,rgba(255,210,76,.16),transparent 42%),linear-gradient(145deg,rgba(22,24,58,.98),rgba(5,7,20,.98));box-shadow:0 20px 70px rgba(0,0,0,.6),0 0 50px rgba(255,210,76,.12);animation:bpCardIn .42s cubic-bezier(.2,.9,.25,1.2)}
 .bp-buy-crown{font-size:54px;filter:drop-shadow(0 0 18px rgba(255,210,76,.8));animation:bpCrown 1.1s ease-out both}.bp-buy-card h2{font:16px 'Press Start 2P';color:var(--amber);margin:10px 0}.bp-buy-card p{font-size:9px;line-height:1.6;color:var(--offwhite);opacity:.82;margin:0}.bp-buy-card .bp-buy-line{margin-top:13px;color:#9dffb0;font:8px 'Press Start 2P'}
@@ -544,7 +548,7 @@ html[data-theme=arctic] .screen{box-shadow:inset 0 0 0 1px rgba(15,23,42,.18),in
 .gesture-hint b{color:var(--cyan)}
 .gesture-hint.hidden{display:none!important}
 #gameover-screen{overflow-y:auto!important;scrollbar-width:thin}
-.go-actions-top{position:sticky;top:-1px;z-index:12;margin:4px 0 10px!important;padding:7px;border:1px solid rgba(85,255,244,.14);border-radius:15px;background:rgba(5,7,18,.9);backdrop-filter:blur(10px);box-shadow:0 8px 22px rgba(0,0,0,.3)}
+.go-actions-top{position:sticky;top:-1px;z-index:12;margin:4px 0 10px!important;padding:7px;border:1px solid rgba(85,255,244,.14);border-radius:15px;background:rgba(5,7,18,.94);box-shadow:0 8px 22px rgba(0,0,0,.3)}
 .go-actions-top .menu-btn{min-height:42px}
 #gameover-screen .go-actions:not(.go-actions-top){display:none}
 #wheel-screen{padding-top:54px!important}
@@ -565,7 +569,53 @@ html[data-theme=arctic] .screen{box-shadow:inset 0 0 0 1px rgba(15,23,42,.18),in
 #pet-note .pet-note-title{font:7px 'Press Start 2P';color:var(--cyan);letter-spacing:.5px}
 @media(max-width:430px){#cust-pet{grid-template-columns:1fr 1fr!important}.pet-card{min-height:82px}.gesture-hint{font-size:6px;bottom:14px}}
 </style>
-<style id="astro-ux-17-2">:root{--ui-cyan:#55fff4;--ui-pink:#ff4fa3;--ui-gold:#ffd45a;}button{font-family:'Press Start 2P',monospace;-webkit-font-smoothing:none}button:focus-visible,input:focus-visible{outline:2px solid var(--ui-cyan);outline-offset:2px}.overlay{gap:11px!important}.overlay:before{content:'';position:absolute;inset:8px;border:1px solid rgba(255,255,255,.05);border-radius:20px;pointer-events:none}.overlay>*{position:relative;z-index:1}.overlay h1{font-size:18px!important;line-height:1.35!important}.menu-btn,.share-btn,.play-btn,.mode-btn,.nav-btn,.m-chip,.toggle,.go-x,.go-actions button,.q button,.claim{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease,border-color .16s ease}.menu-btn:hover,.share-btn:hover,.mode-btn:hover,.nav-btn:hover,.m-chip:hover,.go-actions button:hover,.q button:hover,.claim:hover{filter:brightness(1.06)}.menu-btn:active,.share-btn:active,.mode-btn:active,.nav-btn:active,.m-chip:active,.go-actions button:active,.q button:active,.claim:active{transform:translateY(2px) scale(.985)}.go-strip>div,.go-stats>div,.go-xp,.q,#bp-box,.swrow,.phead,.srow,.aw,.wr,.pl-card,.bp-tier{backdrop-filter:blur(10px)}.go-actions{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,rgba(3,5,15,.95) 32%);padding-top:12px}#gameover-screen{padding-bottom:10px!important}#shop-screen .swlist{justify-content:flex-end}#settings-screen .srow{max-width:320px}#profile-screen .stats div,.bp-tier,.aw,.wr,.pl-card{position:relative;overflow:hidden}#profile-screen .stats div:after,#bp-screen .bp-tier:after,#shop-screen .swrow:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.045),transparent 38%)}#wheel-screen{justify-content:flex-start!important;padding-top:22px!important}#wheel-screen .wheel-status{width:min(330px,92%)}#welcome-screen{background:linear-gradient(180deg,rgba(4,7,18,.96),rgba(8,10,24,.98))!important}#welcome-screen .hint{font-size:17px!important}#welcome-screen .menu-btn{min-width:170px}#gesture-hint{bottom:20px!important;left:50%!important;right:auto!important;transform:translateX(-50%);width:auto!important;max-width:86%;padding:7px 12px!important;border-radius:999px!important;background:rgba(3,5,15,.9)!important;border:1px solid rgba(255,255,255,.08)!important}@media(max-width:430px){.overlay{padding-left:14px!important;padding-right:14px!important}#wheel-screen #wheel-cv{width:min(310px,78vw)!important;height:min(310px,78vw)!important}}</style>
+<style id="astro-ux-17-2">:root{--ui-cyan:#55fff4;--ui-pink:#ff4fa3;--ui-gold:#ffd45a;}button{font-family:'Press Start 2P',monospace;-webkit-font-smoothing:none}button:focus-visible,input:focus-visible{outline:2px solid var(--ui-cyan);outline-offset:2px}.overlay{gap:11px!important}.overlay:before{content:'';position:absolute;inset:8px;border:1px solid rgba(255,255,255,.05);border-radius:20px;pointer-events:none}.overlay>*{position:relative;z-index:1}.overlay h1{font-size:18px!important;line-height:1.35!important}.menu-btn,.share-btn,.play-btn,.mode-btn,.nav-btn,.m-chip,.toggle,.go-x,.go-actions button,.q button,.claim{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease,border-color .16s ease}.menu-btn:hover,.share-btn:hover,.mode-btn:hover,.nav-btn:hover,.m-chip:hover,.go-actions button:hover,.q button:hover,.claim:hover{filter:brightness(1.06)}.menu-btn:active,.share-btn:active,.mode-btn:active,.nav-btn:active,.m-chip:active,.go-actions button:active,.q button:active,.claim:active{transform:translateY(2px) scale(.985)}.go-strip>div,.go-stats>div,.go-xp,.q,#bp-box,.swrow,.phead,.srow,.aw,.wr,.pl-card,.bp-tier{background:rgba(255,255,255,.045)}.go-actions{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,rgba(3,5,15,.95) 32%);padding-top:12px}#gameover-screen{padding-bottom:10px!important}#shop-screen .swlist{justify-content:flex-end}#settings-screen .srow{max-width:320px}#profile-screen .stats div,.bp-tier,.aw,.wr,.pl-card{position:relative;overflow:hidden}#profile-screen .stats div:after,#bp-screen .bp-tier:after,#shop-screen .swrow:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.045),transparent 38%)}#wheel-screen{justify-content:flex-start!important;padding-top:22px!important}#wheel-screen .wheel-status{width:min(330px,92%)}#welcome-screen{background:linear-gradient(180deg,rgba(4,7,18,.96),rgba(8,10,24,.98))!important}#welcome-screen .hint{font-size:17px!important}#welcome-screen .menu-btn{min-width:170px}#gesture-hint{bottom:20px!important;left:50%!important;right:auto!important;transform:translateX(-50%);width:auto!important;max-width:86%;padding:7px 12px!important;border-radius:999px!important;background:rgba(3,5,15,.9)!important;border:1px solid rgba(255,255,255,.08)!important}@media(max-width:430px){.overlay{padding-left:14px!important;padding-right:14px!important}#wheel-screen #wheel-cv{width:min(310px,78vw)!important;height:min(310px,78vw)!important}}</style>
+<style id="astro-19-yandex">
+/* [19.0] YANDEX GAMES: вход/рейтинг в профиле и покупки через SDK.
+   Всё наследует цвета текущей темы (var(--*)), поэтому работает во всех трёх темах. */
+.ya-box{width:min(320px,92%);display:flex;flex-direction:column;gap:7px;align-items:center}
+.lb-list{width:100%;display:flex;flex-direction:column;gap:3px;font-family:'Press Start 2P';font-size:7px}
+.lb-row{display:flex;gap:6px;align-items:center;justify-content:space-between;padding:5px 8px;border-radius:7px;
+background:var(--panel);border:1px solid var(--pb);color:var(--offwhite)}
+.lb-row>b:first-child{flex:0 0 20px;text-align:left;color:var(--amber)}
+.lb-row>b:last-child{flex:0 0 auto;color:var(--cyan)}
+.lb-row .lb-nick{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+.lb-head{background:transparent;border:0;color:var(--cyan);justify-content:center;font-size:6px;letter-spacing:1px}
+.lb-row.me{border-color:var(--amber);background:rgba(255,210,76,.12)}
+.iap-wrap{width:min(330px,94%);display:flex;flex-direction:column;gap:6px;align-items:center}
+.iap-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.iap-btn{font-family:'Press Start 2P';font-size:7px;line-height:1.5;padding:8px 9px;border-radius:9px;cursor:pointer;
+border:1px solid var(--pb);background:linear-gradient(160deg,rgba(255,210,76,.22),rgba(255,95,168,.14));
+color:var(--offwhite);text-align:center}
+.iap-btn u{display:block;text-decoration:none;color:var(--amber);margin-top:3px}
+.iap-btn:active{transform:translateY(1px)}
+/* Кнопка «другой модификатор за рекламу» — подпись обязана помещаться в кабинет (360px)
+   и оставаться читаемой, поэтому переносим её в две строки. */
+.chal-preview{flex-wrap:wrap}
+#chal-reroll-btn{max-width:116px;min-width:0;white-space:normal;line-height:1.4;font-size:6px;padding:5px 6px;border-radius:10px!important}
+/* [PERF-20] lowfx: убираем дорогие полноэкранные декоративные слои в режиме производительности. */
+body.lowfx .scanlines,body.lowfx .vignette,body.lowfx .spacebg{display:none!important}
+body.lowfx .sb-glow,body.lowfx .sb-stars{display:none!important}
+.fps-hud{position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:40;font:8px "Press Start 2P",monospace;color:#7CFF6B;text-shadow:0 1px 2px #000;background:rgba(3,5,12,.55);padding:4px 7px;border-radius:6px;pointer-events:none}
+</style>
+<style id="astro-20-design">
+/* [20.0] ФИНАЛЬНЫЙ ДИЗАЙН-ПАСС (чистый CSS — не трогает canvas и не влияет на FPS):
+   добавляем объём, глубину и «дорогой» вид кнопкам и панелям, не ломая существующие
+   цветовые варианты (.gold/.red/.alt) — меняем только тени, кромки и блики. */
+.menu-btn,.nav-btn,.mode-btn{box-shadow:0 3px 0 rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.09);}
+.menu-btn:not(.gold):not(.red){background:linear-gradient(180deg,rgba(85,255,244,.14),rgba(85,255,244,.04));}
+.menu-btn.gold{box-shadow:0 3px 0 rgba(120,80,0,.5),inset 0 1px 0 rgba(255,255,255,.35);}
+.menu-btn.red{box-shadow:0 3px 0 rgba(90,10,20,.5),inset 0 1px 0 rgba(255,255,255,.15);}
+.menu-btn:hover,.nav-btn:hover,.mode-btn:hover{box-shadow:0 4px 0 rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.12),0 0 18px rgba(85,255,244,.12);}
+.play-btn{box-shadow:0 5px 0 rgba(0,60,55,.55),0 12px 34px rgba(76,241,232,.25),inset 0 1px 0 rgba(255,255,255,.35);}
+.nav-btn{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));}
+.m-chip{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02));box-shadow:inset 0 1px 0 rgba(255,255,255,.08);}
+.overlay h1{filter:drop-shadow(0 0 14px rgba(76,241,232,.45));}
+.go-score-card,.go-strip>div,.go-stats>div{box-shadow:inset 0 1px 0 rgba(255,255,255,.06);}
+.bp-tier,.aw,.wr,.pl-card{box-shadow:inset 0 1px 0 rgba(255,255,255,.05);}
+/* Чуть плотнее подложки оверлеев — лучше читаемость текста без blur. */
+.overlay{background:linear-gradient(180deg,rgba(5,7,18,.9),rgba(3,5,15,.95));}
+</style>
 <style id="astro-175-design">
 :root{--danger2:#ff5d6f;--ui-shadow:rgba(0,0,0,.36)}
 body.large-ui .screen{font-size:1.04em}body.large-ui .menu-btn,body.large-ui .nav-btn,body.large-ui .toggle{transform:scale(1.03);transform-origin:center}
@@ -578,7 +628,7 @@ html.high-contrast .hint,html.high-contrast .note{opacity:1!important}
 .chal-preview{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;font-family:'VT323',monospace;font-size:15px;color:var(--offwhite)}
 .chal-preview #chal-reroll-btn{font-family:'Press Start 2P';font-size:9px;padding:6px 8px}
 .dc-btns .dc-ad{background:linear-gradient(145deg,#7FE8DC,#2FA99A)!important;border-color:rgba(127,232,220,.5)!important;color:#052924!important;min-width:72px!important;padding:7px 8px!important}
-.ob-warning-chip{position:absolute;z-index:7;pointer-events:none;transform:translateX(-50%);font:7px 'Press Start 2P';padding:5px 7px;border-radius:999px;background:rgba(5,7,18,.86);border:1px solid rgba(255,212,90,.35);color:#fff6c7;backdrop-filter:blur(6px);box-shadow:0 8px 18px rgba(0,0,0,.25)}
+.ob-warning-chip{position:absolute;z-index:7;pointer-events:none;transform:translateX(-50%);font:7px 'Press Start 2P';padding:5px 7px;border-radius:999px;background:rgba(5,7,18,.92);border:1px solid rgba(255,212,90,.35);color:#fff6c7;box-shadow:0 8px 18px rgba(0,0,0,.25)}
 /* Make collision visuals crisp without square halos */
 #game{filter:none!important}.ob-soft-glow{filter:drop-shadow(0 0 5px rgba(0,0,0,.28))}
 @media(max-width:430px){#daily-card{max-width:100%;grid-template-columns:34px 1fr auto;padding:9px 10px}.daily-card button{min-width:62px}}
@@ -597,6 +647,7 @@ html.high-contrast .hint,html.high-contrast .note{opacity:1!important}
 <canvas id="game" width="360" height="640"></canvas>
 <div class="vignette"></div><div class="scanlines"></div>
 <div class="errbar" id="errbar"></div>
+<div class="fps-hud hidden" id="fps-hud">60</div>
 <div class="hud"><span><span data-i18n="hud_score"></span> <span id="score">0</span></span><span class="best"><span data-i18n="hud_best"></span> <span id="best">0</span></span></div>
 <!-- [16.7] редизайн: компактная иконка паузы без текста -->
 <button class="pause-btn hidden" id="pause-btn" aria-label="PAUSE" title="PAUSE"><span class="pause-icon"><i></i><i></i></span></button>
@@ -676,9 +727,10 @@ html.high-contrast .hint,html.high-contrast .note{opacity:1!important}
 <div class="srow"><span data-i18n="reducedMotion">ПЛАВНЫЕ ЭФФЕКТЫ</span><button class="toggle" id="reduced-motion-toggle">OFF</button></div>
 <div class="srow"><span data-i18n="largeUi">КРУПНЫЙ ИНТЕРФЕЙС</span><button class="toggle" id="large-ui-toggle">OFF</button></div>
 <div class="srow"><span data-i18n="highContrast">ВЫСОКИЙ КОНТРАСТ</span><button class="toggle" id="high-contrast-toggle">OFF</button></div>
+<div class="srow"><span data-i18n="fpsMeter">FPS-МЕТР</span><button class="toggle" id="fps-toggle">OFF</button></div>
 <button class="menu-btn red" id="reset-btn" data-i18n="reset"></button>
 <button class="menu-btn" id="settings-close" data-i18n="back"></button>
-<p class="note" style="opacity:.55">© 2026 Nosty · ASTRO HOP v17.6</p></div>
+<p class="note" style="opacity:.55">© 2026 Nosty · ASTRO HOP v19.0</p></div>
 <div class="overlay scroll hidden" id="shop-screen">
 <div class="shop-title-row"><div><h1 data-i18n="customize"></h1><p class="note" id="shop-collection" data-i18n="shopCollection">КОЛЛЕКЦИЯ · РЕДКИЕ → КОСМИЧЕСКИЕ</p></div><span class="shop-gem">✦</span></div>
 <p class="daily-line" style="color:var(--amber)">🪙 <span id="shop-coins">0</span></p>
@@ -697,6 +749,9 @@ html.high-contrast .hint,html.high-contrast .note{opacity:1!important}
 <div class="swrow"><span data-i18n="pref"></span><div class="swlist" id="cust-pref"></div></div>
 
 <p class="note" data-i18n="custHint"></p>
+<!-- [19.0] Покупки через Yandex Games SDK (п.1.4/1.13): строка появляется ТОЛЬКО если
+     товары заведены и активны в консоли разработчика — иначе витрины в игре нет. -->
+<div class="iap-wrap hidden" id="iap-wrap"><p class="daily-line" data-i18n="iapTitle"></p><div class="iap-row" id="iap-row"></div></div>
 <button class="menu-btn" id="shop-close" data-i18n="back"></button></div>
 <div class="overlay hidden" id="wheel-screen"><button class="wheel-close-top" id="wheel-close-top" aria-label="Закрыть">×</button><h1 data-i18n="wheel"></h1><p class="wheel-sub" data-i18n="wheel_sub"></p><canvas id="wheel-cv" width="360" height="360"></canvas><div class="wheel-status"><span data-i18n="wheel_daily"></span>: <b id="wheel-count">1 / 1</b><br><span data-i18n="wheel_next"></span>: <b id="wheel-next">23:59:59</b></div><p class="wheel-result" id="wheel-result"></p><p class="hint" id="wheel-info"></p><button class="menu-btn gold" id="wheel-spin" data-i18n="spin"></button><button class="menu-btn hidden" id="wheel-spin-ad" data-i18n="wheelAdSpin"></button><button class="menu-btn" id="wheel-close" data-i18n="back"></button></div>
 <div class="overlay hidden" id="week-screen"><h1 data-i18n="wr_title"></h1><p class="daily-line" id="wr-mult"></p><div class="wr-grid" id="wr-grid"></div><button class="menu-btn gold" id="wr-claim" data-i18n="wr_take"></button><button class="menu-btn" id="wr-close" data-i18n="back"></button></div>
@@ -723,6 +778,14 @@ html.high-contrast .hint,html.high-contrast .note{opacity:1!important}
 <div><em data-i18n="dist"></em><span id="pf-dist">0</span></div><div><em data-i18n="deaths"></em><span id="pf-deaths">0</span></div>
 <div class="wide"><em data-i18n="furthest"></em><span id="pf-planet"></span></div>
 <div class="wide"><em data-i18n="played"></em><span id="pf-played">0</span></div></div>
+<!-- [19.0] YANDEX GAMES: вход по явной кнопке (п.1.2.1 — авторизация только по действию
+     игрока и с понятной выгодой) + таблица лидеров платформы. Блок полностью пустой
+     и скрытый, если SDK не подключён. -->
+<div class="ya-box">
+<button class="menu-btn hidden" id="ya-login" data-i18n="yaLogin"></button>
+<p class="daily-line"><span data-i18n="lbTitle"></span>: <b id="ya-nick"></b></p>
+<div class="lb-list" id="lb-list"></div>
+</div>
 <button class="menu-btn" id="profile-close" data-i18n="back"></button></div>
 <div class="gesture-hint hidden" id="gesture-hint"><b>ТАП</b> — ПРЫЖОК · <b>СВАЙП ↓</b> — ПОДКАТ · <b>СВАЙП ↑</b> — РЫВОК</div>
 <button class="duck-btn hidden" id="duck-btn" data-i18n="duck">ПОДКАТ</button>
@@ -730,7 +793,7 @@ html.high-contrast .hint,html.high-contrast .note{opacity:1!important}
 <button class="jump-btn hidden" id="jump-btn">JUMP</button>
 </div></div>
 <script>
-/* ASTRO HOP 16.7 FINAL by Nosty — audit fixes + fairness pass. */
+/* ASTRO HOP 19.0 by Nosty — Yandex Games release build: SDK lifecycle, ads & monetization hardening. */
 (() => {
 'use strict';
 const errbar=document.getElementById('errbar');
@@ -764,54 +827,235 @@ function G(k,def){const d=rawSave();const v=d.o?d.o[k]:undefined;if(v===undefine
 function S(k,v){const d=sv();d.o[k]=String(v);commit(d);}
 function SOwn(slot,i,val){const d=sv();d.own['astro_own_'+slot+'_'+i]=val?'1':'0';commit(d);}
 function GOwn(slot,i){const d=rawSave();return d.own&&d.own['astro_own_'+slot+'_'+i]==='1';}
-let ysdk=null;
-/* [ADS] Баннер раньше показывался один раз при старте и больше никогда не трогался — то есть
-   висел поверх HUD/кнопок прыжка весь забег, а случайные тапы по нему Яндекс считает фродом.
-   Теперь баннер прячется на время игры (hideAdBanner в startGame/doRevive/doReviveAd/
-   resumeGame) и возвращается на экранах меню/паузы/гейм-овера (showAdBanner в
-   finishGO/pauseGame/quitMenu). */
-function showAdBanner(){try{if(ysdk&&ysdk.adv&&ysdk.adv.showBannerAdv)ysdk.adv.showBannerAdv();}catch(e){}}
-function hideAdBanner(){try{if(ysdk&&ysdk.adv&&ysdk.adv.hideBannerAdv)ysdk.adv.hideBannerAdv();}catch(e){}}
-function initYandex(){if(window.YaGames)YaGames.init().then(s=>{ysdk=s;try{s.features.LoadingAPI.ready();}catch(e){}
-showAdBanner();
-/* [I18N] Автоопределение языка через сам Яндекс SDK — это надёжнее navigator.language,
-   т.к. отражает язык, реально выставленный в аккаунте/интерфейсе Яндекс Игр. Применяется
-   только если игрок ещё НИ РАЗУ не переключал язык вручную (нет сохранённого astro_lang) —
-   ручной выбор игрока всегда в приоритете и никогда не перезаписывается. */
-try{if(!G('astro_lang','')){
-const yl=(s.environment&&s.environment.i18n&&s.environment.i18n.lang)?String(s.environment.i18n.lang).toLowerCase():'';
-if(yl&&LANGS.indexOf(yl)!==-1&&yl!==lang){lang=yl;applyI18n();}
-}}catch(e){}
-try{s.getPlayer({scopes:false}).then(p=>{yaPlayer=p;cloudPull();}).catch(()=>{});}catch(e){}
-}).catch(()=>{});}
-function gpStart(){try{if(ysdk)ysdk.features.GameplayAPI.start();}catch(e){}}
-function gpStop(){try{if(ysdk)ysdk.features.GameplayAPI.stop();}catch(e){}}
-/* ===== РЕКЛАМА (Yandex Games SDK) =====
-   showInterstitial() вызывается в die() (каждая 3-я смерть), showRewarded() — в
-   doReviveAd(), claimCoinsAd() и кнопке "ещё спин" колеса фортуны.
-   Яндекс требует на время показа рекламы выключать звук игры и включать обратно в onClose —
-   тут это сделано через приостановку/возобновление общего AudioContext (AC), поэтому
-   не нужно трогать пользовательские настройки звука/музыки. */
-let adBusy=false,deathCount=0,lastAdT=-1e9,launchCount=0,chalPreviewMod=-1;
-function muteForAd(){try{if(AC&&AC.state==='running')AC.suspend();}catch(e){}}
-function unmuteForAd(){try{if(AC&&AC.state==='suspended'&&(musicOn||soundOn))AC.resume();}catch(e){}}
+/* ===== [19.0] СЛОЙ ИНТЕГРАЦИИ С ЯНДЕКС ИГРАМИ (SDK) =====
+   Всё, что связано с платформой, живёт в этом блоке и полностью деградирует в no-op,
+   если SDK не подключён (локальная разработка / другой хостинг): ysdk остаётся null,
+   реклама не вызывается, прогресс живёт в localStorage.
+   Соответствие требованиям платформы (yandex.com/dev/games → Game requirements):
+     1.1    SDK подключён из официального источника, инициализация через YaGames.init();
+     1.3    при потере фокуса звук останавливается (onPlatformBlur + visibilitychange);
+     1.9    прогресс сохраняется сразу после действия и дублируется в облако (Player.setData);
+     1.12   монетизация подключена: interstitial + rewarded + sticky-баннер + покупки через SDK;
+     1.19.2 LoadingAPI.ready() вызывается в момент, когда игроку реально доступно управление;
+     1.19.3 GameplayAPI.start()/stop() вызываются строго парами, в том числе вокруг рекламы;
+     1.19.4 события game_api_pause / game_api_resume обрабатываются;
+     2.14   язык интерфейса определяется автоматически через ysdk.environment.i18n.lang;
+     4.2    прогресс сохраняется до показа рекламы (клик по рекламе уводит игрока из игры);
+     4.4    interstitial — только в логических паузах, с троттлингом, никогда в геймплее;
+     4.5    rewarded — только по явной кнопке, подпись объясняет и просмотр ролика, и награду;
+     4.6    из дополнительных рекламных блоков используется только sticky-баннер платформы;
+     4.7    на время полноэкранной рекламы звук и геймплей приостановлены. */
+let ysdk=null,yaPlayer=null,yaLB=null,yaPayments=null;
+let yaProducts={},yaCurrencyID='',yaInited=false,yaBootDone=false,yaReadySent=false,yaAuthed=false;
+let yaPausedByPlatform=false,gameplayRunning=false;
+/* Троттлинг межстраничной рекламы. Частоту показов в остальном регулирует сама платформа,
+   локальный порог нужен для UX и чтобы два триггера (смерть / старт забега) не показали
+   ролик подряд. */
+const AD_MIN_GAP=60000;      /* не чаще раза в 60 с */
+const AD_FIRST_AFTER=40000;  /* первый interstitial — не раньше 40 с от открытия игры */
+const AD_WATCHDOG=45000;     /* страховка на случай, если SDK не позвал ни одного колбэка */
+let adBusy=false,adWatchdog=0,deathCount=0,lastAdT=-1e9,launchCount=0,menuLeaves=0,chalPreviewMod=-1;
+const adSessionT0=Date.now();
+const adsOn=()=>!!(ysdk&&ysdk.adv);
+/* Экраны, на которых sticky-баннер уместен: это паузы в геймплее, и там нет кнопок,
+   которые баннер мог бы перекрыть. На экране поражения (главная кнопка «ИГРАТЬ» внизу)
+   и в паузе баннер НЕ показывается — п.4.4: реклама не должна мешать управлению. */
+const BANNER_SCREENS=['start-screen','shop-screen','profile-screen','quests-screen','planets-screen','awards-screen','wheel-screen','week-screen','settings-screen','bp-screen'];
+function anyScreenVisible(list){for(let i=0;i<list.length;i++){const el=document.getElementById(list[i]);if(el&&!el.classList.contains('hidden'))return true;}return false;}
+/* [ADS] Баннер показывается один раз при старте и возвращается на экранах меню,
+   прячется на время забега и на время любой полноэкранной рекламы. */
+function showAdBanner(){try{if(adsOn()&&!adBusy&&ysdk.adv.showBannerAdv&&anyScreenVisible(BANNER_SCREENS))ysdk.adv.showBannerAdv();}catch(e){}}
+function hideAdBanner(){try{if(adsOn()&&ysdk.adv.hideBannerAdv)ysdk.adv.hideBannerAdv();}catch(e){}}
+/* GameplayAPI: платформа требует start/stop строго парами и немедленно вокруг них
+   начинать/останавливать геймплей. Флаг не даёт послать два одинаковых события подряд. */
+function gpStart(){if(gameplayRunning)return;gameplayRunning=true;try{if(ysdk&&ysdk.features.GameplayAPI)ysdk.features.GameplayAPI.start();}catch(e){}}
+function gpStop(){if(!gameplayRunning)return;gameplayRunning=false;try{if(ysdk&&ysdk.features.GameplayAPI)ysdk.features.GameplayAPI.stop();}catch(e){}}
+/* [1.19.2] Game Ready — только когда игра реально собрана и готова к первому касанию,
+   поэтому нужны ОБА флага: SDK проинициализирован И стартовый код отработал до конца. */
+function gameReady(){if(yaReadySent||!yaInited||!yaBootDone)return;yaReadySent=true;
+try{if(ysdk&&ysdk.features&&ysdk.features.LoadingAPI)ysdk.features.LoadingAPI.ready();}catch(e){}}
+/* [4.2] Сохраняем прогресс перед рекламой: клик по ролику уводит игрока из игры,
+   и при возврате он должен увидеть ровно то состояние, которое было до рекламы. */
+function saveNow(){try{if(typeof qSave==='function')qSave();}catch(e){}try{cloudPushNow();}catch(e){}}
+/* [4.7 / 1.3] Звук на время рекламы (и при потере фокуса) глушится приостановкой общего
+   AudioContext — пользовательские настройки звука/музыки при этом не трогаются. */
+function adMute(){try{if(AC&&AC.state==='running')AC.suspend();}catch(e){}}
+function adUnmute(){try{if(AC&&AC.state==='suspended'&&(musicOn||soundOn)){const p=AC.resume();
+/* [FIX] После resume() у планировщика музыки mNext остаётся в прошлом — весь накопившийся
+   такт выстреливал разом («пулемёт» из нот) на первом же кадре после рекламы/возврата
+   во вкладку. Сдвигаем следующий шаг вперёд от текущего времени. */
+try{if(p&&p.then)p.then(()=>{if(musId&&AC)mNext=AC.currentTime+.06;}).catch(()=>{});else if(musId&&AC)mNext=AC.currentTime+.06;}catch(e){}}
+}catch(e){}}
+/* Платформенная пауза (свои оверлеи Яндекс Игр): п.1.19.4. */
+function onPlatformPause(){yaPausedByPlatform=true;try{if(game.state==='playing')pauseGame(true);else adMute();}catch(e){}}
+function onPlatformResume(){yaPausedByPlatform=false;try{adUnmute();}catch(e){}}
+/* [1.3] Потеря фокуса окном/вкладкой — глушим звук и ставим забег на паузу. */
+function onPlatformBlur(){try{if(game.state==='playing')pauseGame(true);else adMute();}catch(e){}}
+/* Межстраничная реклама. Разрешена только в логических паузах (меню/пауза/итоги) и не
+   чаще AD_MIN_GAP; в самом забеге не вызывается никогда. */
+function interstitialAllowed(){return adsOn()&&!adBusy&&game.state!=='playing'&&game.state!=='dying'
+&&Date.now()-lastAdT>AD_MIN_GAP&&Date.now()-adSessionT0>AD_FIRST_AFTER;}
 function showInterstitial(cb){
- if(!ysdk||!ysdk.adv||adBusy){if(cb)cb();return;}
- adBusy=true;muteForAd();
+ const done=()=>{if(cb)cb();};
+ if(!interstitialAllowed()){done();return;}
+ lastAdT=Date.now();adBusy=true;
+ hideAdBanner();saveNow();gpStop();adMute();
+ let fired=false;
+ const finish=()=>{if(fired)return;fired=true;clearTimeout(adWatchdog);adBusy=false;adUnmute();done();};
+ adWatchdog=setTimeout(finish,AD_WATCHDOG);
  try{ysdk.adv.showFullscreenAdv({callbacks:{
-  onClose:function(){adBusy=false;unmuteForAd();if(cb)cb();},
-  onOffline:function(){adBusy=false;unmuteForAd();if(cb)cb();},
-  onError:function(){adBusy=false;unmuteForAd();if(cb)cb();}
- }});}catch(e){adBusy=false;unmuteForAd();if(cb)cb();}
+  onOpen:function(){},
+  onClose:function(){finish();},
+  onError:function(){finish();}
+ }});}catch(e){finish();}
 }
+/* Rewarded-видео: только по явной кнопке игрока (п.4.5), без троттлинга. Награда выдаётся
+   строго в onRewarded/onClose — если ролик не досмотрен, награды нет. */
 function showRewarded(onReward,onFail){
- if(!ysdk||!ysdk.adv||adBusy){if(onFail)onFail();return;}
- adBusy=true;muteForAd();let rewarded=false;
+ const fail=()=>{if(onFail)onFail();};
+ if(!adsOn()||adBusy){fail();return;}
+ adBusy=true;hideAdBanner();saveNow();gpStop();adMute();
+ let rewarded=false,fired=false;
+ const finish=()=>{if(fired)return;fired=true;clearTimeout(adWatchdog);adBusy=false;adUnmute();
+ if(rewarded){if(onReward)onReward();}else fail();};
+ adWatchdog=setTimeout(finish,AD_WATCHDOG*2);
  try{ysdk.adv.showRewardedVideo({callbacks:{
+  onOpen:function(){},
   onRewarded:function(){rewarded=true;},
-  onClose:function(){adBusy=false;unmuteForAd();if(rewarded){if(onReward)onReward();}else if(onFail)onFail();},
-  onError:function(){adBusy=false;unmuteForAd();if(onFail)onFail();}
- }});}catch(e){adBusy=false;unmuteForAd();if(onFail)onFail();}
+  onClose:function(){finish();},
+  onError:function(){finish();}
+ }});}catch(e){finish();}
+}
+/* ===== [19.0] ПОКУПКИ ЧЕРЕЗ ЯНДЕКС ИГРЫ (п.1.4 / 1.13) =====
+   Показываются ТОЛЬКО если товар с таким id реально заведён и активен в консоли
+   разработчика (проверяется по каталогу payments.getCatalog()). Если покупок в консоли
+   нет — UI остаётся прежним, «пустых» витрин в игре не появляется (п.1.13.6). */
+const IAP={premium:'astro_premium',coins500:'astro_coins_500',coins2000:'astro_coins_2000',coins5000:'astro_coins_5000'};
+const IAP_REWARDS={};
+IAP_REWARDS[IAP.premium]={kind:'premium'};
+IAP_REWARDS[IAP.coins500]={kind:'coins',value:500};
+IAP_REWARDS[IAP.coins2000]={kind:'coins',value:2000};
+IAP_REWARDS[IAP.coins5000]={kind:'coins',value:5000};
+function iapProduct(id){return yaProducts[id]||null;}
+function iapPrice(pr){if(!pr)return'';const cur=pr.currencyID||yaCurrencyID||'';
+if(pr.priceLabel)return String(pr.priceLabel);
+if(pr.price!==undefined&&pr.price!==null)return String(pr.price)+(cur?' '+cur:'');
+return cur;}
+function iapGrant(id){const rw=IAP_REWARDS[id];if(!rw)return false;
+if(rw.kind==='premium'){if(bpIsPremium())return true;S('astro_bp_premium','1');}
+else if(rw.kind==='coins'){shopCoins+=rw.value;S('astro_coins',shopCoins);}
+refreshStats();sCoin();confetti();return true;}
+/* Съедание незакрытых покупок (п.1.13.1): сначала выдаём награду, потом consumePurchase.
+   Список обработанных токенов храним локально, чтобы не выдать одну покупку дважды. */
+function iapProcessPending(){if(!yaPayments)return;
+try{yaPayments.getPurchases().then(list=>{
+(list||[]).forEach(p=>{const tok=p&&p.purchaseToken;if(!tok)return;
+const seen=G('astro_iap_done','');if(('|'+seen+'|').indexOf('|'+tok+'|')!==-1)return;
+iapGrant(p.productID);S('astro_iap_done',(seen?seen+'|':'')+tok);
+try{yaPayments.consumePurchase(tok).catch(()=>{});}catch(e){}});
+}).catch(()=>{});}catch(e){}}
+function initPayments(){try{if(!ysdk.getPayments)return;
+ysdk.getPayments({signed:false}).then(p=>{yaPayments=p;return p.getCatalog();}).then(cat=>{
+try{const cur=cat.getCurrencies&&cat.getCurrencies();if(cur&&cur.currencyID)yaCurrencyID=cur.currencyID;}catch(e){}
+try{(cat.getProducts()||[]).forEach(pr=>{if(pr&&pr.id)yaProducts[pr.id]=pr;});}catch(e){}
+iapProcessPending();try{renderBattlePass();}catch(e){}try{renderShop();}catch(e){}try{syncIapUI();}catch(e){}
+}).catch(()=>{});}catch(e){}}
+function buyIap(id,after){const pr=iapProduct(id);if(!pr||!yaPayments){return false;}
+try{gpStop();hideAdBanner();adMute();
+yaPayments.purchase({id:id}).then(p=>{iapGrant(id);
+const tok=p&&p.purchaseToken;if(tok){S('astro_iap_done',(G('astro_iap_done','')?G('astro_iap_done','')+'|':'')+tok);
+try{yaPayments.consumePurchase(tok).catch(()=>{});}catch(e){}}
+adUnmute();try{renderBattlePass();}catch(e){}try{renderShop();}catch(e){}if(after)after(true);
+}).catch(()=>{adUnmute();if(after)after(false);});
+return true;}catch(e){adUnmute();return false;}}
+/* Витрина покупок. Пустая (и скрытая), если в консоли разработчика нет ни одного
+   товара из списка IAP — игра не показывает «несуществующие» товары (п.1.13.6). */
+function syncIapUI(){
+ const wrap=$('iap-wrap'),row=$('iap-row');
+ const ids=[IAP.coins500,IAP.coins2000,IAP.coins5000].filter(iapProduct);
+ if(wrap)setVisible(wrap,ids.length>0);
+ if(row){row.innerHTML='';
+ ids.forEach(id=>{const pr=iapProduct(id),rw=IAP_REWARDS[id];
+  const b=document.createElement('button');b.className='iap-btn';
+  b.appendChild(document.createTextNode(rw.value+' 🪙'));
+  const u=document.createElement('u');u.textContent=iapPrice(pr)||t('iapBuy');b.appendChild(u);
+  b.addEventListener('pointerdown',e=>e.stopPropagation());
+  b.onclick=e=>{e.stopPropagation();buyIap(id,ok=>{toast(ok?('🪙 '+t('iapOk')):t('fail'));try{renderShop();}catch(err){}});};
+  row.appendChild(b);});}
+ /* Премиум батл-пасса: если товар заведён в консоли — цена показывается цифрой и в валюте
+    портала (п.1.13.4), покупка идёт через SDK; иначе остаётся покупка за игровые монеты. */
+ const bp=$('bp-premium'),pr=iapProduct(IAP.premium);
+ if(bp&&pr&&!bpIsPremium())setText(bp,t('bpPremiumIap')+' · '+iapPrice(pr));
+}
+/* ===== [19.0] АВТОРИЗАЦИЯ (п.1.2.1/1.2.2) =====
+   Игра доступна без входа (гость, прогресс в localStorage + облаке анонимного игрока).
+   Вход — только по явной кнопке и с объяснением выгоды: облачные сохранения на всех
+   устройствах и участие в таблице лидеров. */
+function syncAuthUI(){const b=$('ya-login');if(!b)return;
+yaAuthed=!!(yaPlayer&&yaPlayer.isAuthorized&&yaPlayer.isAuthorized());
+setVisible(b,!!ysdk&&!yaAuthed);
+const n=$('ya-nick');if(n)setText(n,yaAuthed&&yaPlayer?(yaPlayer.getName()||''):t('yaGuest'));}
+function yaLogin(){if(!ysdk||!ysdk.auth)return;
+try{ysdk.auth.openAuthDialog().then(()=>ysdk.getPlayer({scopes:false})).then(p=>{
+yaPlayer=p;syncAuthUI();cloudPull();toast('🔑 '+t('yaAuthOk'));renderLeaderboard();
+}).catch(()=>{});}catch(e){}}
+/* ===== ЛИДЕРБОРД ===== */
+const LB_NAME='astro_hop_best'; /* технич. имя таблицы лидеров — создать в консоли Яндекс Игр с этим именем (или заменить константу) */
+function submitLeaderboardScore(score){
+ if(!ysdk)return;
+ try{(yaLB?Promise.resolve(yaLB):ysdk.getLeaderboards()).then(lb=>{yaLB=lb;
+  return lb.setLeaderboardScore(LB_NAME,Math.floor(score));
+ }).then(()=>yaLB.getLeaderboardPlayerEntry(LB_NAME)).then(e=>{if(e&&e.rank)toast(tf('lbRank',e.rank));}).catch(()=>{});}catch(e){}
+}
+function renderLeaderboard(){
+ const box=$('lb-list');if(!box)return;
+ box.innerHTML='';
+ const fill=(title,rows)=>{const h=document.createElement('div');h.className='lb-row lb-head';
+  h.innerHTML='<span></span><span>'+title+'</span><span></span>';box.appendChild(h);
+  (rows||[]).forEach((r,i)=>{const d=document.createElement('div');d.className='lb-row'+(r.isMe?' me':'');
+   const nm=(r.player&&(r.player.publicName||r.player.name))||'—';
+   d.innerHTML='<b>'+(r.rank||i+1)+'</b><span class="lb-nick"></span><b>'+r.score+'</b>';
+   d.querySelector('.lb-nick').textContent=String(nm).slice(0,16);box.appendChild(d);});};
+ if(!ysdk){const d=document.createElement('div');d.className='lb-row';d.textContent=t('lbOffline');box.appendChild(d);return;}
+ try{(yaLB?Promise.resolve(yaLB):ysdk.getLeaderboards()).then(lb=>{yaLB=lb;
+  return lb.getLeaderboardEntries(LB_NAME,{quantityTop:10,includeUser:true,quantityAround:3});
+ }).then(res=>{const top=(res&&res.ranges&&res.ranges.length)?res.ranges[0].items:((res&&res.entries)||[]);
+  fill(t('lbTop'),top);
+  const me=res&&res.userRank?[{rank:res.userRank,score:(res.entries&&res.entries[0]&&res.entries[0].score)||Number(G('astro_best',0))||0,player:{publicName:t('you')},isMe:true}]:null;
+  if(me)fill(t('lbYou'),me);
+ }).catch(()=>{const d=document.createElement('div');d.className='lb-row';d.textContent=t('lbOffline');box.appendChild(d);});}catch(e){}
+}
+/* ===== ОЦЕНКА ИГРЫ (метрика Rating влияет на ранжирование, п.2.13) =====
+   Просим оценку один раз за сессию, только после осмысленной игры и только если SDK
+   говорит, что запрос доступен. */
+let rateAsked=false;
+function maybeAskRating(){if(rateAsked||!ysdk||!ysdk.feedback||!ysdk.feedback.canReview)return;
+if(totalRuns<3||Number(G('astro_rate_done','0'))===1)return;
+rateAsked=true;
+try{ysdk.feedback.canReview().then(r=>{if(!r||!r.value)return;
+return ysdk.feedback.requestReview();}).then(r=>{if(r&&r.feedbackSent)S('astro_rate_done','1');}).catch(()=>{});}catch(e){}}
+/* ===== ИНИЦИАЛИЗАЦИЯ SDK ===== */
+function initYandex(){
+ if(!window.YaGames)return;
+ try{window.YaGames.init().then(function(s){
+  ysdk=s;yaInited=true;
+/* [I18N, п.2.14] Автоопределение языка через сам Яндекс SDK — это надёжнее
+   navigator.language, т.к. отражает язык, реально выставленный в интерфейсе Яндекс Игр.
+   Применяется только если игрок ещё НИ РАЗУ не переключал язык вручную: ручной выбор
+   всегда в приоритете и никогда не перезаписывается. */
+  try{if(!G('astro_lang','')){
+   const yl=(s.environment&&s.environment.i18n&&s.environment.i18n.lang)?String(s.environment.i18n.lang).toLowerCase():'';
+   if(yl&&LANGS.indexOf(yl)!==-1&&yl!==lang){lang=yl;applyI18n();}
+  }}catch(e){}
+/* [1.19.4] Платформенные события паузы/возобновления. */
+  try{if(s.on){s.on('game_api_pause',onPlatformPause);s.on('game_api_resume',onPlatformResume);}}catch(e){}
+/* [1.2.2] Гостевой игрок: вход не требуется, но прогресс всё равно уезжает в облако. */
+  try{s.getPlayer({scopes:false}).then(p=>{yaPlayer=p;syncAuthUI();cloudPull();renderLeaderboard();}).catch(()=>{syncAuthUI();});}catch(e){syncAuthUI();}
+  try{s.getLeaderboards().then(lb=>{yaLB=lb;renderLeaderboard();}).catch(()=>{});}catch(e){}
+  initPayments();
+  gameReady();
+  showAdBanner();
+ }).catch(()=>{gameReady();});}catch(e){gameReady();}
 }
 /* ===== [18.0] ОБЛАЧНЫЙ ПРОГРЕСС + ЛИДЕРБОРД (Yandex Games) =====
    localStorage остаётся основным хранилищем — облако лишь подстраховывает при смене
@@ -820,8 +1064,6 @@ function showRewarded(onReward,onFail){
    поэтому объединение никогда не откатывает прогресс назад, только дополняет его.
    Если открыть игру не на Яндексе (или SDK не подключился) — весь блок просто не
    активируется, ysdk/yaPlayer остаются null, и всё работает как раньше, на localStorage. */
-let yaPlayer=null;
-const LB_NAME='astro_hop_best'; /* технич. имя таблицы лидеров — создать в консоли Яндекс Игр с этим именем (или заменить константу на уже существующее) */
 const CLOUD_PROGRESS_KEYS=['astro_best','astro_coins','astro_total_stars','astro_total_runs','astro_missions','astro_played_s','astro_streak','astro_bp','astro_bplv','astro_lvl','astro_mc','astro_furthest','astro_deaths','astro_dist'];
 function mergeCloudSave(cloudRaw){
  let cloud;try{cloud=JSON.parse(cloudRaw||'{}')||{};}catch(e){cloud={};}
@@ -841,14 +1083,6 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 window.addEventListener('pagehide',cloudPushNow);
 const _commit18=commit;
 commit=function(d){_commit18(d);cloudPushSoon();};
-function submitLeaderboardScore(score){
- if(!ysdk)return;
- try{ysdk.getLeaderboards().then(lb=>{
-  lb.setLeaderboardScore(LB_NAME,Math.floor(score)).then(()=>{
-   lb.getLeaderboardPlayerEntry(LB_NAME).then(e=>{if(e&&e.rank)toast(tf('lbRank',e.rank));}).catch(()=>{});
-  }).catch(()=>{});
- }).catch(()=>{});}catch(e){}
-}
 /* [18.0] Подсказка повернуть телефон — не блокирует игру (кабинет и так теперь
    корректно вписывается по высоте), просто мягкая рекомендация один раз за сессию. */
 let rotateHintShown=false;
@@ -862,6 +1096,11 @@ window.addEventListener('resize',checkRotateHint);
 window.addEventListener('orientationchange',checkRotateHint);
 const canvas=$('game'),ctx=canvas.getContext('2d');
 const W=360,H=640,DPR=Math.min(window.devicePixelRatio||1,2);
+/* [PERF-20] Масштаб рендера: в режиме PERFORMANCE рисуем в 1× вместо 2× DPR — это до 4×
+   меньше пикселей на кадр и сразу убирает лаги на слабых телефонах. Визуально пиксель-арт
+   почти не страдает, т.к. image-rendering:pixelated. */
+let RS=DPR;
+function setRenderScale(){RS=perfMode?1:DPR;canvas.width=W*RS;canvas.height=H*RS;}
 canvas.width=W*DPR;canvas.height=H*DPR;
 let reducedMotion=G('astro_reduced_motion','0')==='1'||!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 function hashStr(s){let h=5381;for(let i=0;i<s.length;i++){h=((h<<5)+h)+s.charCodeAt(i);h|=0;}return h>>>0;}
@@ -951,9 +1190,29 @@ Object.assign(I18N.tr,{autoPerf:'⚡ Düşük FPS — PERFORMANCE moduna geçild
 Object.assign(I18N.es,{autoPerf:'⚡ FPS bajo — modo PERFORMANCE activado'});
 /* [AD-EXPANSION] новые точки rewarded + контекстные подписи для интерстишла/баннера */
 Object.assign(I18N.en,{streakFreezeBtn:'🎬 FREEZE STREAK · AD',streakSaved:'Streak saved!',reviveAdBoss:'🎬 CONTINUE FIGHT · AD',rerollBtn:'🎬 REROLL · AD'});
-Object.assign(I18N.ru,{streakFreezeBtn:'🎬 ЗАМОРОЗИТЬ СЕРИЮ',streakSaved:'Серия сохранена!',reviveAdBoss:'🎬 ПРОДОЛЖИТЬ БОЙ · РЕКЛАМА',rerollBtn:'🎬 ДРУГОЙ МОДИФИКАТОР'});
-Object.assign(I18N.tr,{streakFreezeBtn:'🎬 SERİYİ DONDUR',streakSaved:'Seri korundu!',reviveAdBoss:'🎬 SAVAŞA DEVAM · REKLAM',rerollBtn:'🎬 BAŞKA MODİFİYE'});
-Object.assign(I18N.es,{streakFreezeBtn:'🎬 CONGELAR RACHA',streakSaved:'¡Racha guardada!',reviveAdBoss:'🎬 SEGUIR PELEA · ANUNCIO',rerollBtn:'🎬 OTRO MODIFICADOR'});
+Object.assign(I18N.ru,{streakFreezeBtn:'🎬 ЗАМОРОЗИТЬ СЕРИЮ · РЕКЛАМА',streakSaved:'Серия сохранена!',reviveAdBoss:'🎬 ПРОДОЛЖИТЬ БОЙ · РЕКЛАМА',rerollBtn:'🎬 ДРУГОЙ МОДИФИКАТОР · РЕКЛАМА'});
+Object.assign(I18N.tr,{streakFreezeBtn:'🎬 SERİYİ DONDUR · REKLAM',streakSaved:'Seri korundu!',reviveAdBoss:'🎬 SAVAŞA DEVAM · REKLAM',rerollBtn:'🎬 BAŞKA MODİFİYE · REKLAM'});
+Object.assign(I18N.es,{streakFreezeBtn:'🎬 CONGELAR RACHA · ANUNCIO',streakSaved:'¡Racha guardada!',reviveAdBoss:'🎬 SEGUIR PELEA · ANUNCIO',rerollBtn:'🎬 OTRO MODIFICADOR · ANUNCIO'});
+/* [19.0] YANDEX GAMES: вход в аккаунт, таблица лидеров, покупки через SDK, суточные награды */
+Object.assign(I18N.en,{yaLogin:'🔑 SIGN IN — CLOUD SAVES & RANKING',yaGuest:'GUEST',yaAuthOk:'Signed in!',lbTitle:'LEADERBOARD',lbTop:'TOP PLAYERS',lbYou:'YOU',you:'YOU',lbOffline:'Leaderboard is available in Yandex Games',iapTitle:'COIN PACKS',iapBuy:'BUY',bpPremiumIap:'👑 UNLOCK PREMIUM',clockWarn:'⏳ Check your device clock',iapOk:'Purchase complete!'});
+Object.assign(I18N.ru,{yaLogin:'🔑 ВОЙТИ — ОБЛАКО И РЕЙТИНГ',yaGuest:'ГОСТЬ',yaAuthOk:'Вход выполнен!',lbTitle:'РЕЙТИНГ',lbTop:'ЛУЧШИЕ ИГРОКИ',lbYou:'ВЫ',you:'ВЫ',lbOffline:'Рейтинг доступен в Яндекс Играх',iapTitle:'НАБОРЫ МОНЕТ',iapBuy:'КУПИТЬ',bpPremiumIap:'👑 ОТКРЫТЬ ПРЕМИУМ',clockWarn:'⏳ Проверь часы устройства',iapOk:'Покупка выполнена!'});
+Object.assign(I18N.tr,{yaLogin:'🔑 GİRİŞ — BULUT KAYIT & SIRALAMA',yaGuest:'MİSAFİR',yaAuthOk:'Giriş yapıldı!',lbTitle:'SIRALAMA',lbTop:'EN İYİLER',lbYou:'SEN',you:'SEN',lbOffline:'Sıralama Yandex Games içinde mevcut',iapTitle:'ALTIN PAKETLERİ',iapBuy:'SATIN AL',bpPremiumIap:'👑 PREMİUM AÇ',clockWarn:'⏳ Cihaz saatini kontrol et',iapOk:'Satın alma tamam!'});
+Object.assign(I18N.es,{yaLogin:'🔑 ENTRAR — NUBE Y RANKING',yaGuest:'INVITADO',yaAuthOk:'¡Sesión iniciada!',lbTitle:'RANKING',lbTop:'MEJORES',lbYou:'TÚ',you:'TÚ',lbOffline:'El ranking está disponible en Yandex Games',iapTitle:'PAQUETES DE MONEDAS',iapBuy:'COMPRAR',bpPremiumIap:'👑 DESBLOQUEAR PREMIUM',clockWarn:'⏳ Revisa el reloj del dispositivo',iapOk:'¡Compra completada!'});
+/* [19.0] FIX (п.8.2.3 — тексты, значимые для геймплея, должны быть переведены):
+   1) ключ streak использовался в профиле через data-i18n, но не существовал НИ в одном
+      словаре — на экране вместо «СЕРИЯ» рисовалось служебное слово «streak»;
+   2) в турецкой локализации не хватало 43 ключей, в испанской — 34 (батл-пасс, колесо
+      фортуны, названия режимов, порталы). Из-за этого игрок видел смесь английского и
+      своего языка на одном экране — частая причина отказа модерации. */
+Object.assign(I18N.en,{streak:'STREAK',fpsMeter:'FPS METER'});
+Object.assign(I18N.ru,{fpsMeter:'FPS-МЕТР'});
+Object.assign(I18N.tr,{fpsMeter:'FPS SAYACI'});
+Object.assign(I18N.es,{fpsMeter:'MEDIDOR FPS'});
+Object.assign(I18N.ru,{streak:'СЕРИЯ'});
+Object.assign(I18N.tr,{streak:'SERİ'});
+Object.assign(I18N.es,{streak:'RACHA'});
+Object.assign(I18N.tr,{runFinished:'KOŞU TAMAM',xpEarned:'KAZANILAN XP',bpReady:'BATTLE PASS ÖDÜLÜ HAZIR!',bpTitle:'BATTLE PASS · YILDIZ YOLU',bpSub:'30 ödül seviyesi. Oyna, görevleri bitir, ödülleri al.',bpPremium:'PREMİUM AÇ · 1500🪙',bpFree:'ÜCRETSİZ',bpPremiumRow:'PREMİUM',bpAuto:'XP koşular ve görevlerden otomatik kazanılır.',bpLevelLabel:'SEVİYE',bpHowTitle:'BATTLE PASS NASIL GEÇİLİR',bpStep1:'Koşu yap — XP kazan',bpStep2:'Görevleri bitir — XP kazan',bpStep3:'Seviye atla — ödülleri al',bpFreeTrack:'ÜCRETSİZ YOL',bpPremiumTrack:'PREMİUM YOL',bpOwned:'PREMİUM AKTİF',bpPurchaseTitle:'PREMİUM AÇILDI!',bpPurchaseText:'Bu sezonun tüm premium ödülleri artık açık.',bpPurchaseDone:'PREMİUM · AKTİF',mode_endless:'SONSUZ',mode_boss:'BOSS KOŞUSU',mode_hardcore:'ZOR MOD',mode_time_btn:'SÜRE',shopCollection:'KOLEKSİYON · NADİR → KOZMİK',bpSeason:'SEZON 01',bpRunner:'YILDIZ KOŞUCU',premium:'PREMİUM',xpShort:'XP',duck:'KAY',wheel:'ŞANS ÇARKI',wheel_sub:'Çarkı çevir ve ödül kazan!',wheel_daily:'Günlük ücretsiz çevirme',wheel_next:'Sonraki çevirme',spin:'ÇARKI ÇEVİR',free:'ÜCRETSİZ',cost:'Sonraki çevirme yarın',jackpot:'JACKPOT! +250 ALTIN + NADİR İZ!',wheel_reward:'ÖDÜL: ',portalVoidTitle:'BOŞLUK ×2',portalVoidDesc:'8s GÜVENDE · +25🪙 · ×2 ÖDÜL',portalFlyTitle:'UÇUŞ',portalFlyDesc:'6.5s ROKET UÇUŞU · YILDIZLARI TOPLA'});
+Object.assign(I18N.es,{runFinished:'CARRERA COMPLETA',xpEarned:'XP GANADA',bpReady:'¡RECOMPENSA DEL PASE LISTA!',bpTitle:'PASE · CAMINO ESTELAR',bpSub:'30 niveles de recompensas. Juega, completa misiones y reclama.',bpPremium:'DESBLOQUEAR PREMIUM · 1500🪙',bpFree:'GRATIS',bpPremiumRow:'PREMIUM',bpAuto:'La XP se gana automáticamente en carreras y misiones.',bpLevelLabel:'NIVEL',bpHowTitle:'CÓMO COMPLETAR EL PASE',bpStep1:'Juega carreras para ganar XP',bpStep2:'Completa misiones para ganar XP',bpStep3:'Sube de nivel y reclama premios',bpFreeTrack:'VÍA GRATIS',bpPremiumTrack:'VÍA PREMIUM',bpOwned:'PREMIUM ACTIVO',bpPurchaseTitle:'¡PREMIUM DESBLOQUEADO!',bpPurchaseText:'Ya tienes todas las recompensas premium de la temporada.',bpPurchaseDone:'PREMIUM · ACTIVO',mode_endless:'INFINITO',mode_boss:'JEFE RUSH',mode_hardcore:'HARDCORE',mode_time_btn:'TIEMPO',shopCollection:'COLECCIÓN · RARO → CÓSMICO',bpSeason:'TEMPORADA 01',bpRunner:'CORREDOR ESTELAR',premium:'PREMIUM',xpShort:'XP',duck:'DESLIZA',portalVoidTitle:'VACÍO ×2',portalVoidDesc:'8s SEGURO · +25🪙 · ×2 PREMIOS',portalFlyTitle:'VUELO',portalFlyDesc:'6.5s DE VUELO · RECOGE ESTRELLAS'});
 const nl=(navigator.language||'en').toLowerCase();
 let lang=G('astro_lang','')||(nl.indexOf('ru')===0?'ru':nl.indexOf('tr')===0?'tr':nl.indexOf('es')===0?'es':'en');
 if(!I18N[lang])lang='en';
@@ -1225,6 +1484,10 @@ function pickTrack(context){
  let ni=(R()*pool.length)|0; const target=pool[ni]||TRACKS[0]; ni=TRACKS.indexOf(target); if(ni===trackIdx)ni=(ni+1)%TRACKS.length; return ni;
 }
 function musicStart(){if(!musicOn||!AC||musId)return;mNext=AC.currentTime+.06;mBar=0;musSw=36;musId=setInterval(()=>{try{
+ /* [19.0] FIX (п.4.7): пока AudioContext приостановлен (реклама, потеря фокуса, пауза),
+    планировщик не должен набирать ноты «в запас» — иначе на возобновлении весь накопленный
+    такт выстреливал одновременно. Плюс mNext переставляется вперёд в adUnmute()/resumeGame(). */
+ if(!AC||AC.state!=='running')return;
  musSw-=.11;
  const ctx=musicContext();
  if(ctx!==musicCtxLast){musicCtxLast=ctx;trackIdx=pickTrack(ctx);musSw=36;mStep=0;mBar=0;}
@@ -1720,12 +1983,12 @@ burst(player.x+16,player.y+player.h/2,DANGER(),22,300);burst(player.x+16,player.
 ring(player.x+16,player.y+player.h/2,DANGER(),420,5);ring(player.x+16,player.y+player.h/2,'#FFD24C',300,3);
 sHit();musicStop();vib([60,40,80]);
 deathCount++;
-/* [18.0] FIX: раньше реклама показывалась строго на каждую 3-ю смерть без учёта времени —
-   если игрок умирал очень быстро подряд (например, только осваивается или у него плохое
-   соединение и лаги), это било рекламой по нему слишком часто и портило первое впечатление.
-   Добавлен минимальный интервал между интерстишлами. */
-const _nowAd=performance.now();
-if(deathCount%3===0&&_nowAd-lastAdT>20000){lastAdT=_nowAd;setTimeout(()=>showInterstitial(),900);}
+/* [19.0] ADS: межстраничная реклама на каждой 3-й смерти, но решение принимается в момент
+   самого показа через interstitialAllowed() — он проверяет, что игра уже в логической паузе
+   (п.4.4: реклама не мешает управлению), что с прошлого ролика прошло минимум AD_MIN_GAP
+   и что с открытия игры прошло достаточно времени. Задержка 900 мс нужна, чтобы ролик
+   открывался уже поверх готового экрана итогов, а не поверх анимации смерти. */
+if(deathCount%3===0)setTimeout(()=>{if(interstitialAllowed())showInterstitial();},900);
 }
 function doRevive(){if(runRevived||shopCoins<REVIVE_COST||game.gmode==='hardcore')return;
 runRevived=true;shopCoins-=REVIVE_COST;S('astro_coins',shopCoins);
@@ -1813,12 +2076,22 @@ setVisible($('revive-ad-btn'),!adRevived&&game.gmode!=='hardcore');
 setText($('revive-ad-btn'),t(boss.on?'reviveAdBoss':'reviveAd'));
 setVisible($('coins-ad-btn'),!adCoinsClaimed&&runCoins>0);
 $('gameover-screen').classList.remove('hidden');
+saveNow();
 showAdBanner();
 if(nb)confetti();
 refreshStats();refreshQuestUI();}
 function pauseGame(silent){if(game.state!=='playing')return;game.state='paused';$('pause-screen').classList.remove('hidden');qSave();if(AC&&AC.state==='running')AC.suspend();gpStop();showAdBanner();if(!silent)vib(10);}
-function resumeGame(){if(game.state!=='paused')return;game.state='playing';$('pause-screen').classList.add('hidden');if(AC&&AC.state==='suspended')AC.resume();lastTs=performance.now();gpStart();hideAdBanner();}
-function quitMenu(){game.state='start';gpStop();hideAll(['pause-screen','gameover-screen']);$('start-screen').classList.remove('hidden');syncPauseButton();refreshStats();refreshQuestUI();refreshPlanets();updateChalPreview();showAdBanner();}
+function resumeGame(){if(game.state!=='paused')return;game.state='playing';$('pause-screen').classList.add('hidden');
+if(AC&&AC.state==='suspended'){try{AC.resume();mNext=AC.currentTime+.06;}catch(e){}}
+lastTs=performance.now();gpStart();hideAdBanner();}
+/* [19.0] ADS: возврат в меню — логическая пауза, поэтому здесь допустим ещё один
+   межстраничный ролик (каждый 3-й возврат). Троттлинг AD_MIN_GAP не даст показать его
+   сразу после ролика на смерти, а баннер возвращается только если ролик не показывался. */
+function quitMenu(){game.state='start';gpStop();hideAll(['pause-screen','gameover-screen']);$('start-screen').classList.remove('hidden');syncPauseButton();refreshStats();refreshQuestUI();refreshPlanets();updateChalPreview();saveNow();
+menuLeaves++;
+if(menuLeaves%3===0&&interstitialAllowed())setTimeout(()=>showInterstitial(showAdBanner),700);
+else showAdBanner();
+maybeAskRating();}
 /* [ADS] Заморозка стрика: раньше пропущенный день сразу и молча обнулял серию при загрузке.
    Теперь, если день пропущен (но серия была больше 1), сброс не коммитится в S() сразу —
    вместо этого ставится флаг streakAtRisk, и игрок видит на карточке дня кнопку "заморозить
@@ -2165,13 +2438,17 @@ ctx.strokeStyle=OUTLINE;ctx.lineWidth=1;ctx.strokeRect(-23.5,-9.5,9,17);
 if(flame){const fl=6+R()*8;
 ctx.fillStyle=AMB();ctx.beginPath();ctx.moveTo(-22,10);ctx.lineTo(-19,10+fl);ctx.lineTo(-16,10);ctx.closePath();ctx.fill();
 ctx.fillStyle='#fff';ctx.fillRect(-20,10,2,fl*.5);}}
+/* [PERF-20] Кэш полноэкранных градиентов: раньше createLinearGradient создавался КАЖДЫЙ
+   кадр (2+ аллокации/кадр + GC-паузы). Теперь градиент пересоздаётся только при смене цвета. */
+let _skyKey='',_skyG=null,_hgKey='',_hgG=null;
 function render(){
-ctx.imageSmoothingEnabled=false;ctx.setTransform(DPR,0,0,DPR,0,0);
+ctx.imageSmoothingEnabled=false;ctx.setTransform(RS,0,0,RS,0,0);
 if(game.shake>0&&shakeOn&&!reducedMotion)ctx.translate((R()-.5)*9,(R()-.5)*9);
-const skyG=ctx.createLinearGradient(0,0,0,GROUND_Y);
-skyG.addColorStop(0,rgbs([bgCur.sky[0]*.16,bgCur.sky[1]*.16,bgCur.sky[2]*.16]));
-skyG.addColorStop(.78,rgbs([bgCur.sky[0]*.46,bgCur.sky[1]*.46,bgCur.sky[2]*.46]));
-ctx.fillStyle=skyG;ctx.fillRect(-12,-12,W+24,GROUND_Y+14);
+const skyKey=(bgCur.sky[0]|0)+','+(bgCur.sky[1]|0)+','+(bgCur.sky[2]|0);
+if(skyKey!==_skyKey){_skyKey=skyKey;_skyG=ctx.createLinearGradient(0,0,0,GROUND_Y);
+_skyG.addColorStop(0,rgbs([bgCur.sky[0]*.16,bgCur.sky[1]*.16,bgCur.sky[2]*.16]));
+_skyG.addColorStop(.78,rgbs([bgCur.sky[0]*.46,bgCur.sky[1]*.46,bgCur.sky[2]*.46]));}
+ctx.fillStyle=_skyG;ctx.fillRect(-12,-12,W+24,GROUND_Y+14);
 if(gfx&&!perfMode){ctx.globalAlpha=.58;ctx.drawImage(NEB,0,0);ctx.globalAlpha=1;}
 const env=PLANETS[curPlanet].env;
 if(env===2&&!perfMode){ctx.globalAlpha=.14;ctx.strokeStyle='#9BE8FF';ctx.lineWidth=6;
@@ -2218,11 +2495,12 @@ if(phase==='fly'||flyCount>0||voidPend>0||voidT>0){
 const frameC=(phase==='fly'||flyCount>0)?SEC():'#9C8CFF';
 const approaching=flyCount>0||voidPend>0;
 const frameA=(approaching?.32:.5)+.32*Math.sin(game.time*(approaching?10:6));
-ctx.save();ctx.globalAlpha=Math.max(.12,frameA);ctx.strokeStyle=frameC;ctx.lineWidth=approaching?4:6;
-ctx.shadowColor=frameC;ctx.shadowBlur=approaching?8:14;ctx.strokeRect(4,4,W-8,H-8);ctx.restore();}
-const hg=ctx.createLinearGradient(0,GROUND_Y-80,0,GROUND_Y+4);
-hg.addColorStop(0,rgba(ACC(),0));hg.addColorStop(1,rgba(ACC(),.14));
-ctx.fillStyle=hg;ctx.fillRect(-12,GROUND_Y-80,W+24,86);
+ctx.save();ctx.globalAlpha=Math.max(.12,frameA)*.3;ctx.strokeStyle=frameC;ctx.lineWidth=(approaching?4:6)+7;ctx.strokeRect(2,2,W-4,H-4);
+ctx.globalAlpha=Math.max(.12,frameA);ctx.lineWidth=approaching?3:4;ctx.strokeRect(5,5,W-10,H-10);ctx.restore();}
+const hgKey=themeId;
+if(hgKey!==_hgKey){_hgKey=hgKey;_hgG=ctx.createLinearGradient(0,GROUND_Y-80,0,GROUND_Y+4);
+_hgG.addColorStop(0,rgba(ACC(),0));_hgG.addColorStop(1,rgba(ACC(),.14));}
+ctx.fillStyle=_hgG;ctx.fillRect(-12,GROUND_Y-80,W+24,86);
 const offF=(game.bg*.16)%80;ctx.beginPath();ctx.moveTo(-offF,GROUND_Y);
 ridgeF.forEach((rx,i)=>ctx.lineTo(rx-offF,GROUND_Y-92-(i%3)*20-(i%2)*10));
 ctx.lineTo(440,GROUND_Y);ctx.closePath();
@@ -2247,7 +2525,7 @@ ctx.fillRect(p.x,0,p.w,p.gapY);ctx.fillRect(p.x,p.gapY+p.gapH,p.w,GROUND_Y-(p.ga
 ctx.fillStyle=rgba(SEC(),.9);ctx.fillRect(p.x-3,p.gapY-8,p.w+6,8);ctx.fillRect(p.x-3,p.gapY+p.gapH,p.w+6,8);
 ctx.fillStyle='rgba(255,255,255,.25)';ctx.fillRect(p.x+4,0,3,p.gapY);ctx.fillRect(p.x+4,p.gapY+p.gapH,3,GROUND_Y-(p.gapY+p.gapH));});
 if(flyCount>0){const px=flyPortalX,pu=.6+.4*Math.sin(game.time*10);ctx.save();ctx.globalAlpha=.9;ctx.fillStyle=SEC();ctx.fillRect(px-6,62,10,GROUND_Y-62);ctx.fillRect(px+29,62,10,GROUND_Y-62);ctx.globalAlpha=.16*pu;ctx.fillRect(px+4,62,25,GROUND_Y-62);ctx.globalAlpha=.7;ctx.strokeStyle='rgba(255,255,255,.82)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px+5,62);ctx.lineTo(px+5,GROUND_Y);ctx.moveTo(px+29,62);ctx.lineTo(px+29,GROUND_Y);ctx.stroke();ctx.globalAlpha=1;if(fontReady){ctx.font='8px "Press Start 2P",monospace';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.fillText(t('portalFly'),px+16,48);ctx.font='6px \"Press Start 2P\",monospace';ctx.fillStyle=AMB();ctx.fillText(t('portalFlyDesc'),px+16,57);ctx.textAlign='left';}ctx.restore();}
-if(voidPend>0){const px=voidPortalX,pu=.6+.4*Math.sin(game.time*12);ctx.save();ctx.globalAlpha=.9;ctx.fillStyle='#9C8CFF';ctx.shadowColor='#9C8CFF';ctx.shadowBlur=18;ctx.fillRect(px-7,62,10,GROUND_Y-62);ctx.fillRect(px+29,62,10,GROUND_Y-62);ctx.globalAlpha=.16*pu;ctx.fillRect(px+4,62,25,GROUND_Y-62);ctx.globalAlpha=.7;ctx.strokeStyle='rgba(255,255,255,.82)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px+5,62);ctx.lineTo(px+5,GROUND_Y);ctx.moveTo(px+29,62);ctx.lineTo(px+29,GROUND_Y);ctx.stroke();ctx.globalAlpha=1;if(fontReady){ctx.font='8px "Press Start 2P",monospace';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.fillText(t('portalPass'),px+16,48);ctx.font='6px \"Press Start 2P\",monospace';ctx.fillStyle=AMB();ctx.fillText(t('portalVoidDesc'),px+16,57);ctx.textAlign='left';}ctx.restore();}
+if(voidPend>0){const px=voidPortalX,pu=.6+.4*Math.sin(game.time*12);ctx.save();ctx.globalAlpha=.25;ctx.fillStyle='#9C8CFF';ctx.fillRect(px-11,60,18,GROUND_Y-58);ctx.globalAlpha=.9;ctx.fillStyle='#9C8CFF';ctx.fillRect(px-7,62,10,GROUND_Y-62);ctx.fillRect(px+29,62,10,GROUND_Y-62);ctx.globalAlpha=.16*pu;ctx.fillRect(px+4,62,25,GROUND_Y-62);ctx.globalAlpha=.7;ctx.strokeStyle='rgba(255,255,255,.82)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px+5,62);ctx.lineTo(px+5,GROUND_Y);ctx.moveTo(px+29,62);ctx.lineTo(px+29,GROUND_Y);ctx.stroke();ctx.globalAlpha=1;if(fontReady){ctx.font='8px "Press Start 2P",monospace';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.fillText(t('portalPass'),px+16,48);ctx.font='6px \"Press Start 2P\",monospace';ctx.fillStyle=AMB();ctx.fillText(t('portalVoidDesc'),px+16,57);ctx.textAlign='left';}ctx.restore();}
 /* [16.7] FIX: бобинг убран из отрисовки (он уже в update) — раньше применялся дважды */
 function drawCustomObstacle(o){
  const k=o.custom, x=o.x, y=o.y, w=o.w,h=o.h, c=PLANETS[curPlanet].boss, r=PLANETS[curPlanet].rock;
@@ -2515,7 +2793,7 @@ try{const dt=Math.min((ts-lastTs)/1000||0,.033);lastTs=ts;
    даёт естественные гичи, это не показатель реальной производительности устройства). */
 if(!perfMode&&!autoPerfTriggered&&ts>4000){const rawDt=lastRawTs?ts-lastRawTs:16;
 if(rawDt>34)lowFrameAccum+=rawDt;else lowFrameAccum=Math.max(0,lowFrameAccum-rawDt*1.5);
-if(lowFrameAccum>2600){perfMode=true;autoPerfTriggered=true;S('astro_perf','1');syncToggles();toast(t('autoPerf'));}}
+if(lowFrameAccum>2600){perfMode=true;autoPerfTriggered=true;S('astro_perf','1');syncToggles();setRenderScale();applyFxClass();toast(t('autoPerf'));}}
 lastRawTs=ts;
 if(!perfMode){shootT-=dt;
 if(shootT<=0){shootT=4+R()*6;shoots.push({x:340+R()*40,y:20+R()*120,vx:-(240+R()*120),vy:110+R()*60,l:.9});}
@@ -2527,7 +2805,9 @@ monAmb={x:fr?600:-240,y:64+R()*86,vx:(fr?-1:1)*(24+R()*18),t:R()*6};}}}
 if(game.state==='playing')update(dt);
 else if(game.state==='dying'){game.dieT-=dt;fx(reducedMotion?dt:dt*.4);if(game.shake>0)game.shake-=dt;game.flash=Math.max(0,game.flash-dt*1.2);if(game.dieT<=0)finishGO();}
 else{fx(dt);game.time+=dt;game.bg+=.8;if(trailPts.length)trailPts.shift();}
-render();updHUD();}catch(e){showErr(e);}}
+render();updHUD();
+if(fpsOn){fpsAcc++;const _fn=performance.now();if(_fn-fpsLast>=500){setText($('fps-hud'),Math.round(fpsAcc*1000/(_fn-fpsLast)));fpsAcc=0;fpsLast=_fn;}}
+}catch(e){showErr(e);}}
 let lockUntil=0;
 function jumpCut(){jumpHeld=false;if(game.state==='playing'&&phase==='run'&&player.vy<-140){player.vy*=(PLANETS[curPlanet].env===2?.6:.45);stJ=.06;}}
 function doJump(){
@@ -2579,7 +2859,10 @@ if(e.code==='Space'||e.code==='ArrowUp'||e.code==='KeyW'){e.preventDefault();tap
 else if(e.code==='ArrowDown'||e.code==='KeyS'){e.preventDefault();setDuck(true);}
 else if(e.code==='ShiftLeft'||e.code==='KeyD'||e.code==='KeyX'){e.preventDefault();doDash();}});
 document.addEventListener('keyup',e=>{if(e.code==='Space'||e.code==='ArrowUp'||e.code==='KeyW')jumpCut();if(e.code==='ArrowDown'||e.code==='KeyS')setDuck(false);});
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&game.state==='playing')pauseGame(true);});
+/* [п.1.3] Потеря фокуса/уход со вкладки: звук обязан останавливаться. Если идёт забег —
+   ставим его на паузу (pauseGame глушит AudioContext), если нет — просто глушим звук. */
+document.addEventListener('visibilitychange',()=>{if(document.hidden){cloudPushNow();onPlatformBlur();}});
+window.addEventListener('blur',onPlatformBlur);
 function makeCode(sc){const b=sc.toString(36);let sum=0;for(let i=0;i<b.length;i++)sum+=b.charCodeAt(i);return'AH-'+b+(sum%36).toString(36);}
 function parseCode(txt){const m=/^AH-([0-9a-z]+)([0-9a-z])$/i.exec((txt||'').trim());if(!m)return 0;const b=m[1].toLowerCase();let sum=0;for(let i=0;i<b.length;i++)sum+=b.charCodeAt(i);return(sum%36).toString(36)===m[2].toLowerCase()?parseInt(b,36)||0:0;}
 $('share-btn').addEventListener('pointerdown',e=>e.stopPropagation());
@@ -2693,7 +2976,7 @@ if(!own){if(!buyGeneric('hat',i,h.p))return;}
 cust.hat=i;S('astro_sel_hat',i);bakePlayer();renderShop();};
 box.appendChild(b);});}
 function swPre(elId){const box=$(elId);box.innerHTML=''; PRESETS.forEach((p,i)=>{const own=owns('pre',i);const c1=p.c.body===RB?'#f0f':p.c.body,c2=p.c.boot===RB?'#0ff':p.c.boot;const b=document.createElement('button');b.className='sw'+(mode==='preset'&&preId===i?' sel':'');b.style.background=p.gold?'linear-gradient(135deg,#FFD700,#8a6d00)':'linear-gradient(135deg,'+c1+','+c2+')';b.title=(p.name||('SKIN '+(i+1)))+' · '+rarityName(p.rarity||'RARE');const n=document.createElement('span');n.textContent=p.name||('SKIN '+(i+1));n.style.cssText='position:absolute;left:3px;right:3px;bottom:3px;font:5px "Press Start 2P";color:#fff;text-shadow:0 1px 2px #000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis';b.appendChild(n);if(!own&&p.p>0)priceTag(b,p.p);b.onclick=e=>{e.stopPropagation();if(!own&&!buyGeneric('pre',i,p.p))return;mode='preset';preId=i;S('astro_mode','preset');S('astro_pre',i);bakePlayer();renderShop();};box.appendChild(b);});}
-function renderShop(){setText($('shop-coins'),shopCoins);swPre('pre-list');swColor('body','cust-body');swColor('visor','cust-visor');swFace('cust-face');swColor('boot','cust-boot');swHat('cust-hat');swJet('cust-jet');swPet('cust-pet');swTrail('cust-trail');swGear('cust-gear');swPref('cust-pref');drawPreview();}
+function renderShop(){setText($('shop-coins'),shopCoins);swPre('pre-list');swColor('body','cust-body');swColor('visor','cust-visor');swFace('cust-face');swColor('boot','cust-boot');swHat('cust-hat');swJet('cust-jet');swPet('cust-pet');swTrail('cust-trail');swGear('cust-gear');swPref('cust-pref');drawPreview();syncIapUI();}
 $('shop-open').onclick=e=>{e.stopPropagation();renderShop();$('shop-screen').classList.remove('hidden');};
 $('shop-close').onclick=e=>{e.stopPropagation();$('shop-screen').classList.add('hidden');};
 function refreshQuestUI(){
@@ -2770,7 +3053,9 @@ drawHist();}
 $('nick').addEventListener('input',()=>{nick=cleanNick($('nick').value.trim()||t('rk1')).slice(0,14);$('nick').value=nick;S('astro_nick',nick);syncProfile();});
 $('nick').addEventListener('pointerdown',e=>e.stopPropagation());
 $('profile-close').onclick=e=>{e.stopPropagation();$('profile-screen').classList.add('hidden');};
-$('profile-open').onclick=e=>{e.stopPropagation();syncProfile();$('profile-screen').classList.remove('hidden');};
+$('profile-open').onclick=e=>{e.stopPropagation();syncProfile();syncAuthUI();renderLeaderboard();$('profile-screen').classList.remove('hidden');};
+$('ya-login').addEventListener('pointerdown',e=>e.stopPropagation());
+$('ya-login').onclick=e=>{e.stopPropagation();yaLogin();};
 const WREW=[20,30,40,50,60,80,150];
 function weekState(){return{day:Number(G('astro_wday',0))||0,week:Number(G('astro_wwk',1))||1,avail:G('astro_wlast','')!==dailyDateStr&&canDaily()};}
 function refreshWeek(){const ws=weekState(),grid=$('wr-grid');grid.innerHTML='';
@@ -2783,7 +3068,7 @@ $('wr-claim').disabled=!ws.avail;}
 $('menu-chest').onclick=e=>{e.stopPropagation();audio();refreshWeek();$('week-screen').classList.remove('hidden');};
 $('wr-close').onclick=e=>{e.stopPropagation();$('week-screen').classList.add('hidden');};
 $('wr-claim').onclick=e=>{e.stopPropagation();
-const ws=weekState();if(!ws.avail){if(tamper)toast('⛔');return;}
+const ws=weekState();if(!ws.avail){if(tamper)toast(t('clockWarn'));return;}
 const rew=Math.round(WREW[ws.day]*ws.week);
 shopCoins+=rew;let msg='+'+rew+'🪙';
 if(ws.day===6){S('astro_d7','1');msg='👑 '+t('wr_gold')+' +'+rew+'🪙';}
@@ -2816,7 +3101,7 @@ setVisible($('wheel-dot'),wheelFree());}
 function wheelNextText(){const now=new Date(),next=new Date(now);next.setHours(24,0,0,0);let ms=next-now;const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000),sec=Math.floor(ms%60000/1000);return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');}
 function updateWheelUI(){const free=wheelFree();setText($('wheel-info'),free?t('free'):t('cost'));setText($('wheel-count'),free?'1 / 1':'0 / 1');setText($('wheel-next'),free?'—':wheelNextText());setVisible($('wheel-dot'),free);$('wheel-spin').disabled=spinning||!free;
 const adFree=wheelAdFree();setVisible($('wheel-spin-ad'),!free&&adFree);$('wheel-spin-ad').disabled=spinning;}
-function openWheel(){if(tamper){toast('⛔');return;}$('wheel-screen').classList.remove('hidden');drawWheel(wheelRot);setText($('wheel-result'),'');updateWheelUI();}
+function openWheel(){if(tamper){toast(t('clockWarn'));return;}$('wheel-screen').classList.remove('hidden');drawWheel(wheelRot);setText($('wheel-result'),'');updateWheelUI();}
 $('menu-wheel').onclick=e=>{e.stopPropagation();audio();openWheel();};
 $('wheel-close').onclick=e=>{e.stopPropagation();$('wheel-screen').classList.add('hidden');syncPauseButton();};$('wheel-close-top').onclick=e=>{e.stopPropagation();$('wheel-screen').classList.add('hidden');syncPauseButton();};
 function runWheelSpin(markKey){
@@ -2871,6 +3156,7 @@ function renderBattlePass(){
  });
  const hasReady=BP_REWARDS.some(r=>lv>=r.n&&( !claimed.includes('f'+r.n) || (premium&&!claimed.includes('p'+r.n)) ));
  setVisible($('bp-dot'),hasReady && $('bp-screen').classList.contains('hidden'));
+syncIapUI();
 }
 function openBattlePass(){renderBattlePass();$('bp-screen').classList.remove('hidden');syncPauseButton();}
 function closeBattlePass(){$('bp-screen').classList.add('hidden');syncPauseButton();}
@@ -2884,7 +3170,13 @@ function claimBpAdBoost(){
 $('bp-open').onclick=e=>{e.stopPropagation();openBattlePass();};$('bp-close').onclick=e=>{e.stopPropagation();closeBattlePass();};$('bp-close-bottom').onclick=e=>{e.stopPropagation();closeBattlePass();};
 $('bp-boost-ad').onclick=e=>{e.stopPropagation();claimBpAdBoost();};
 function playBPPurchase(){const m=$('bp-purchase-modal'),burst=$('bp-burst');if(!m)return;burst.innerHTML='';for(let i=0;i<24;i++){const x=document.createElement('i');x.style.setProperty('--r',(i*15)+'deg');x.style.setProperty('--c',['#FFD24C','#FF5FA8','#4CF1E8','#9C8CFF'][i%4]);x.style.transform='rotate('+(i*15)+'deg) translateY(-55px)';burst.appendChild(x);}m.classList.remove('hidden');setTimeout(()=>{m.classList.add('hidden');},1900);}
-$('bp-premium').onclick=e=>{e.stopPropagation();if(bpIsPremium())return;if(shopCoins<1500){toast(t('poor'));return;}shopCoins-=1500;S('astro_coins',shopCoins);S('astro_bp_premium','1');playBPPurchase();confetti();renderBattlePass();refreshStats();};
+/* [19.0] Премиум батл-пасса: если в консоли Яндекс Игр заведён товар astro_premium —
+   покупка идёт через SDK (реальные деньги, п.1.4), иначе — за внутриигровые монеты,
+   как раньше. Оба пути дают ровно тот же премиум. */
+$('bp-premium').onclick=e=>{e.stopPropagation();if(bpIsPremium())return;
+const pr=iapProduct(IAP.premium);
+if(pr&&yaPayments){buyIap(IAP.premium,ok=>{if(ok){playBPPurchase();toast('👑 '+t('iapOk'));renderBattlePass();refreshStats();}else toast(t('fail'));});return;}
+if(shopCoins<1500){toast(t('poor'));return;}shopCoins-=1500;S('astro_coins',shopCoins);S('astro_bp_premium','1');playBPPurchase();confetti();renderBattlePass();refreshStats();};
 /* [DESIGN] Чип streak в меню теперь визуально "разгорается" с ростом серии — тёплое свечение
    с 3 дней, более яркое с 7. Небольшая, безопасная деталь, которая делает растущую серию
    заметной с первого взгляда и усиливает стимул зайти завтра снова. */
@@ -2892,12 +3184,17 @@ function refreshStats(){setText($('menu-coins'),shopCoins);setText($('streak-sta
 const streak=getStreak(),streakChip=$('streak-start')&&$('streak-start').closest('.m-chip');
 if(streakChip){streakChip.classList.toggle('streak-hot',streak>=3&&streak<7);streakChip.classList.toggle('streak-fire',streak>=7);}}
 let largeUI=G('astro_large_ui','0')==='1';
+let fpsOn=G('astro_fps','0')==='1',fpsAcc=0,fpsLast=0;
 let highContrast=G('astro_high_contrast','0')==='1';
 function applyAccessibility(){
  document.documentElement.classList.toggle('reduced-motion',reducedMotion);
  document.body.classList.toggle('large-ui',largeUI);
  document.documentElement.classList.toggle('high-contrast',highContrast);
+ applyFxClass();
 }
+/* [PERF-20] Класс lowfx выключает декоративные полноэкранные слои (сканлайны, виньетку,
+   фоновые свечения) — они не влияют на геймплей, но съедают FPS на слабых устройствах. */
+function applyFxClass(){try{document.body.classList.toggle('lowfx',perfMode||reducedMotion);}catch(e){}}
 /* [FIX] БАГ: раньше здесь был new Date().toISOString().slice(0,10) — это UTC-дата, тогда как
    ВСЕ остальные суточные системы (квесты, серия/streak, колесо фортуны, недельные награды,
    буст батл-пасса) используют dailyDateStr — дату по ЛОКАЛЬНОМУ времени игрока. Из-за
@@ -2928,7 +3225,7 @@ function renderDailyCard(){
  setVisible($('daily-freeze-btn'),streakAtRisk&&!claimed);
 }
 function claimDaily(){
- if(dailyRewardClaimed()){if(tamper)toast('⛔');return;}
+ if(dailyRewardClaimed()){if(tamper)toast(t('clockWarn'));return;}
  if(streakAtRisk){S('astro_streak',1);S('astro_last_day',dailyDateStr);streakAtRisk=false;}
  const reward=dailyRewardAmount();
  shopCoins+=reward;S('astro_coins',shopCoins);S('astro_daily_claim',dailyDayKey());
@@ -2939,7 +3236,7 @@ function claimDaily(){
    навязывается, кнопка просто стоит рядом. Если серия была под угрозой и игрок берёт
    награду тут (не через заморозку) — серия тоже сбрасывается, как и в claimDaily(). */
 function claimDailyAd(){
- if(dailyRewardClaimed()){if(tamper)toast('⛔');return;}
+ if(dailyRewardClaimed()){if(tamper)toast(t('clockWarn'));return;}
  showRewarded(function(){
   if(streakAtRisk){S('astro_streak',1);S('astro_last_day',dailyDateStr);streakAtRisk=false;}
   const reward=dailyRewardAmount()*2;
@@ -2950,7 +3247,8 @@ function claimDailyAd(){
 
 function syncToggles(){const st=(el,on)=>{const b=$(el);setText(b,on?'ON':'OFF');if(b.classList)b.classList.toggle('on',on);};
 st('sfx-toggle',soundOn);st('music-toggle',musicOn);st('vibe-toggle',vibeOn);st('gfx-toggle',gfx);st('cb-toggle',cb);st('perf-toggle',perfMode);st('shake-toggle',shakeOn);
-st('reduced-motion-toggle',reducedMotion);st('large-ui-toggle',largeUI);st('high-contrast-toggle',highContrast);
+st('reduced-motion-toggle',reducedMotion);st('large-ui-toggle',largeUI);st('high-contrast-toggle',highContrast);st('fps-toggle',fpsOn);
+setVisible($('fps-hud'),fpsOn);
 setText($('lang-toggle'),lang.toUpperCase());setText($('theme-toggle'),t('th_'+themeId));}
 $('settings-open').onclick=e=>{e.stopPropagation();$('settings-screen').classList.remove('hidden');syncPauseButton();};
 $('settings-close').onclick=e=>{e.stopPropagation();$('settings-screen').classList.add('hidden');syncPauseButton();};
@@ -2958,11 +3256,12 @@ $('sfx-toggle').onclick=e=>{e.stopPropagation();soundOn=!soundOn;S('astro_sound'
 $('music-toggle').onclick=e=>{e.stopPropagation();musicOn=!musicOn;S('astro_music',musicOn?'1':'0');syncToggles();if(!musicOn)musicStop();else if(game.state==='playing'){audio();musicStart();}};
 $('vibe-toggle').onclick=e=>{e.stopPropagation();vibeOn=!vibeOn;S('astro_vib',vibeOn?'1':'0');syncToggles();};
 $('gfx-toggle').onclick=e=>{e.stopPropagation();gfx=!gfx;S('astro_gfx',gfx?'1':'0');syncToggles();};
-$('perf-toggle').onclick=e=>{e.stopPropagation();perfMode=!perfMode;autoPerfTriggered=true;S('astro_perf',perfMode?'1':'0');syncToggles();};
+$('perf-toggle').onclick=e=>{e.stopPropagation();perfMode=!perfMode;autoPerfTriggered=true;S('astro_perf',perfMode?'1':'0');syncToggles();setRenderScale();applyFxClass();};
 $('shake-toggle').onclick=e=>{e.stopPropagation();shakeOn=!shakeOn;S('astro_shake',shakeOn?'1':'0');syncToggles();};
 $('reduced-motion-toggle').onclick=e=>{e.stopPropagation();reducedMotion=!reducedMotion;S('astro_reduced_motion',reducedMotion?'1':'0');applyAccessibility();syncToggles();};
 $('large-ui-toggle').onclick=e=>{e.stopPropagation();largeUI=!largeUI;S('astro_large_ui',largeUI?'1':'0');applyAccessibility();syncToggles();};
 $('high-contrast-toggle').onclick=e=>{e.stopPropagation();highContrast=!highContrast;S('astro_high_contrast',highContrast?'1':'0');applyAccessibility();syncToggles();};
+$('fps-toggle').onclick=e=>{e.stopPropagation();fpsOn=!fpsOn;S('astro_fps',fpsOn?'1':'0');fpsLast=0;fpsAcc=0;syncToggles();};
 $('daily-claim').onclick=e=>{e.stopPropagation();claimDaily();};
 $('daily-claim-ad').onclick=e=>{e.stopPropagation();claimDailyAd();};
 $('daily-freeze-btn').onclick=e=>{e.stopPropagation();claimStreakFreeze();};
@@ -2994,8 +3293,8 @@ function updateChalPreview(){const show=game.gmode==='chal';setVisible($('chal-p
 if(show){if(chalPreviewMod<0)chalPreviewMod=(R()*4)|0;setText($('chal-mod-name'),'🎲 '+t('mod'+chalPreviewMod));}}
 $('play-btn').onclick=e=>{e.stopPropagation();
 const go=()=>{audio();startGame(game.gmode,0);};
-launchCount++;const _nowAd=performance.now();
-if(launchCount>1&&launchCount%4===0&&_nowAd-lastAdT>20000){lastAdT=_nowAd;showInterstitial(go);}
+launchCount++;
+if(launchCount>1&&launchCount%4===0&&interstitialAllowed())showInterstitial(go);
 else go();};
 document.querySelectorAll('.mode-btn').forEach(b=>{
 b.addEventListener('pointerdown',e=>e.stopPropagation());
@@ -3017,7 +3316,7 @@ $('w-next').onclick=e=>{e.stopPropagation();wSlide++;
 if(wSlide<WSLIDES.length){setText($('w-text'),t(WSLIDES[wSlide]));
 setText($('w-next'),(wSlide===WSLIDES.length-1)?t('w_go')+' ▶':t('w_next')+' ▶');}
 else{S('astro_welcomed','1');$('welcome-screen').classList.add('hidden');
-$('start-screen').classList.remove('hidden');refreshStats();}};
+$('start-screen').classList.remove('hidden');refreshStats();showAdBanner();}};
 let canStart=false;
 setTimeout(()=>{$('s-rocket').classList.add('go');},700);
 setTimeout(()=>{$('s-logo').classList.add('in');},1150);
@@ -3028,13 +3327,26 @@ $('splash').classList.add('off');
 setTimeout(()=>{$('splash').style.display='none';game.state='start';bakePlayer();
 if(!G('astro_welcomed',''))showWelcome();
 else $('start-screen').classList.remove('hidden');
+/* [19.0] ADS: sticky-баннер возвращается только теперь — когда главное меню реально
+   видно (раньше showAdBanner() в init вызывался поверх сплэша и не показывался вообще). */
+showAdBanner();
 syncPauseButton();
 refreshPlanets();auditIds();},430);},{passive:true});
 try{initYandex();checkRotateHint();applyTheme();applyCb();applyAccessibility();bakeCaps();bakePlayer();
 for(let i=0;i<PLANETS.length;i++)bakePlanet(i);
 $('date-start').textContent=dailyDateHuman;
 applyI18n();refreshStats();syncToggles();buildAvatars();syncProfile();refreshQuestUI();refreshPlanets();refreshAwards();checkMetaAch();refreshWeek();
-drawWheel(wheelRot);requestAnimationFrame(loop);}catch(e){showErr(e);}
+/* [PERF-20] Слабые устройства: если игрок ещё не выставлял производительность вручную и
+   у устройства мало памяти/ядер, стартуем сразу в PERFORMANCE-режиме, чтобы игра не лагала
+   с первой секунды. */
+if(G('astro_perf','')===''){try{const dm=navigator.deviceMemory||4,hc=navigator.hardwareConcurrency||4;
+if(dm<=2||hc<=2){perfMode=true;S('astro_perf','1');}}catch(e){}}
+setRenderScale();applyFxClass();syncToggles();
+drawWheel(wheelRot);renderLeaderboard();syncAuthUI();syncIapUI();
+/* [1.19.2] Game Ready: игра собрана, спрайты запечены, интерфейс отрисован — с этого
+   момента игроку доступно управление, поэтому только здесь можно звать LoadingAPI.ready(). */
+yaBootDone=true;gameReady();
+requestAnimationFrame(loop);}catch(e){showErr(e);}
 })();
 </script>
 </body>
