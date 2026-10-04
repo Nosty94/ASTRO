@@ -211,19 +211,31 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated;}
 .wbubble p{margin:0;font-size:19px;color:var(--offwhite);line-height:1.35;}
 #pf-hist{background:var(--panel);border:1px solid var(--pb);border-radius:8px;padding:6px;width:100%;max-width:290px;}
 #pf-hist canvas{width:100%;height:46px;image-rendering:auto;}
-#splash{position:absolute;inset:0;z-index:40;background:radial-gradient(ellipse at 50% 65%,#10143a,#05060f 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .45s;cursor:pointer;}
+#splash{position:absolute;inset:0;z-index:40;overflow:hidden;background:radial-gradient(ellipse at 50% 62%,#151b4d,#05060f 72%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .45s;cursor:pointer;}
 #splash.off{opacity:0;pointer-events:none;}
-.s-stars{position:absolute;inset:-50%;background-image:radial-gradient(1px 1px at 20px 30px,#fff8,transparent),radial-gradient(1px 1px at 140px 90px,#fff6,transparent),radial-gradient(2px 2px at 70px 160px,#fff5,transparent),radial-gradient(1px 1px at 200px 40px,#fff7,transparent);background-size:280px 280px;animation:warp 1.6s linear infinite;opacity:.8;}
+.s-nebula{position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(58% 40% at 20% 16%,rgba(156,140,255,.22),transparent 70%),radial-gradient(50% 38% at 82% 24%,rgba(76,241,232,.17),transparent 70%),radial-gradient(72% 52% at 50% 98%,rgba(255,95,168,.15),transparent 72%);animation:neb 9s ease-in-out infinite alternate;}
+@keyframes neb{to{opacity:.62;transform:scale(1.07)}}
+.s-stars{position:absolute;inset:-50%;z-index:0;background-image:radial-gradient(1px 1px at 20px 30px,#fff8,transparent),radial-gradient(1px 1px at 140px 90px,#fff6,transparent),radial-gradient(2px 2px at 70px 160px,#fff5,transparent),radial-gradient(1px 1px at 200px 40px,#fff7,transparent);background-size:280px 280px;animation:warp 1.6s linear infinite;opacity:.8;}
+.s-stars2{position:absolute;inset:-50%;z-index:0;background-image:radial-gradient(1px 1px at 46px 64px,#fff9,transparent),radial-gradient(1px 1px at 188px 128px,#fff7,transparent),radial-gradient(2px 2px at 116px 208px,#fff6,transparent),radial-gradient(1px 1px at 250px 30px,#fff8,transparent);background-size:340px 340px;animation:warp 2.7s linear infinite;opacity:.5;}
 @keyframes warp{to{background-position:0 280px;}}
-.s-rocket{font-size:58px;filter:drop-shadow(0 0 14px rgba(76,241,232,.6));animation:shk .12s infinite;transition:transform 1s cubic-bezier(.6,-.3,.7,.2),opacity .9s;}
+.s-planet{position:absolute;left:50%;bottom:-150px;z-index:0;width:430px;height:430px;margin-left:-215px;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 50% 20%,#2c42a0,#0e1136 58%,#05060f 80%);box-shadow:0 0 70px rgba(76,241,232,.22),inset 0 -22px 46px rgba(0,0,0,.65);}
+.s-planet:before{content:'';position:absolute;inset:-15px;border-radius:50%;border:2px solid rgba(76,241,232,.32);filter:blur(7px);opacity:.7;}
+.s-rocket{position:relative;z-index:2;font-size:58px;filter:drop-shadow(0 0 14px rgba(76,241,232,.6));animation:shk .12s infinite;transition:transform 1s cubic-bezier(.6,-.3,.7,.2),opacity .9s;}
+.s-rocket:after{content:'';position:absolute;left:50%;top:76%;width:15px;height:44px;margin-left:-7px;border-radius:50% 50% 42% 42%/62% 62% 38% 38%;background:linear-gradient(180deg,rgba(255,205,95,.92),rgba(255,95,168,.55),transparent);filter:blur(3px);opacity:.85;animation:flick .16s infinite alternate;}
+@keyframes flick{to{transform:scaleY(1.28);opacity:.55}}
 .s-rocket.go{transform:translateY(-130vh) rotate(-14deg);opacity:.2;}
+.s-rocket.go:after{opacity:0;}
 @keyframes shk{0%,100%{transform:translate(0,0)}25%{transform:translate(1.5px,-1px)}75%{transform:translate(-1.5px,1px)}}
-.s-logo{font-family:'Press Start 2P';font-size:26px;transform:scale(0);margin-top:26px;background:linear-gradient(180deg,var(--cyan) 30%,#9be9ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 18px rgba(76,241,232,.7));}
+.s-logo{position:relative;z-index:2;font-family:'Press Start 2P';font-size:26px;transform:scale(0);margin-top:26px;background:linear-gradient(180deg,var(--cyan) 30%,#9be9ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 18px rgba(76,241,232,.7));}
 .s-logo span{display:block;font-size:26px;margin-top:8px;background:linear-gradient(180deg,var(--magenta) 30%,#ff9ec6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 18px rgba(255,95,168,.7));}
-.s-logo.in{animation:pop .55s cubic-bezier(.2,1.6,.4,1) forwards;}
+.s-logo.in{animation:pop .55s cubic-bezier(.2,1.6,.4,1) forwards,logoglow 2.8s ease-in-out 1.1s infinite;}
 @keyframes pop{to{transform:scale(1)}}
-.s-tap{font-family:'Press Start 2P';font-size:10px;color:var(--offwhite);margin-top:30px;opacity:0;transition:opacity .4s;}
-.s-tap.on{opacity:1;animation:blink 1.1s steps(2,start) infinite;}
+@keyframes logoglow{0%,100%{filter:drop-shadow(0 0 16px rgba(76,241,232,.6))}50%{filter:drop-shadow(0 0 30px rgba(76,241,232,.95))}}
+.s-tap{position:relative;z-index:2;font-family:'Press Start 2P';font-size:10px;color:#05060f;margin-top:32px;opacity:0;transition:opacity .4s;padding:13px 24px;border-radius:999px;letter-spacing:1px;background:linear-gradient(180deg,var(--cyan),#9be9ff);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28),0 8px 26px rgba(76,241,232,.34);}
+.s-tap.on{opacity:1;animation:tapPulse 1.4s ease-in-out infinite;}
+@keyframes tapPulse{0%,100%{transform:translateY(0) scale(1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28),0 8px 26px rgba(76,241,232,.3)}50%{transform:translateY(-3px) scale(1.045);box-shadow:inset 0 0 0 1px rgba(255,255,255,.4),0 13px 36px rgba(76,241,232,.55)}}
+.s-ver{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:2;font-family:'Press Start 2P';font-size:7px;letter-spacing:1px;color:rgba(255,255,255,.34);pointer-events:none;}
+html.reduced-motion .s-nebula,html.reduced-motion .s-stars,html.reduced-motion .s-stars2,html.reduced-motion .s-rocket:after{animation:none}
 
 /* ASTRO HOP 16.2 UI REWORK */
 .gameover{padding:18px 16px 22px!important;overflow:auto!important;justify-content:flex-start!important;background:radial-gradient(circle at 50% 8%,rgba(76,241,232,.12),transparent 35%),linear-gradient(180deg,rgba(5,6,15,.97),rgba(7,9,25,.98))!important;}
@@ -654,7 +666,7 @@ html.high-contrast .hint,html.high-contrast .note{opacity:1!important}
 <div class="combo hidden" id="combo"></div><div class="ptag hidden" id="ptag"></div><div class="power hidden" id="power"></div>
 <div class="toast" id="toast"></div>
 <div class="mission hidden" id="mission"><span id="mission-text"></span><div class="bar"><i id="mission-bar"></i></div></div>
-<div id="splash"><div class="s-stars"></div><div class="s-rocket" id="s-rocket">🚀</div><div class="s-logo" id="s-logo">ASTRO<span>HOP</span></div><div class="s-tap" id="s-tap" data-i18n="tap_start"></div></div>
+<div id="splash"><div class="s-nebula"></div><div class="s-stars"></div><div class="s-stars2"></div><div class="s-planet"></div><div class="s-rocket" id="s-rocket">🚀</div><div class="s-logo" id="s-logo">ASTRO<span>HOP</span></div><div class="s-tap" id="s-tap" data-i18n="tap_start"></div><div class="s-ver">v19</div></div>
 <div class="overlay hidden" id="welcome-screen"><h1 data-i18n="w_title"></h1><canvas id="w-astro" width="72" height="104"></canvas><div class="wbubble"><p id="w-text"></p></div><button class="menu-btn gold" id="w-next"></button></div>
 <div class="overlay hidden" id="start-screen">
 <div class="m-top"><div class="m-chip">📅 <span id="date-start"></span></div><div class="m-chip">🔥 <span id="streak-start">0</span></div><div class="m-chip">🪙 <span id="menu-coins">0</span></div><div class="m-chip" id="menu-chest">🎁</div><div class="m-chip" id="menu-wheel">🎡<span class="cdot hidden" id="wheel-dot"></span></div></div><div id="daily-card" class="hidden"><div class="dc-icon">🎁</div><div><div class="dc-title" id="daily-title">ЕЖЕДНЕВНАЯ НАГРАДА</div><div class="dc-sub" id="daily-sub">+100 🪙</div></div><div class="dc-btns"><button id="daily-claim">ЗАБРАТЬ</button><button id="daily-claim-ad" class="dc-ad hidden">🎬 x2</button><button id="daily-freeze-btn" class="dc-ad hidden" data-i18n="streakFreezeBtn">🎬 ЗАМОРОЗИТЬ</button></div></div>

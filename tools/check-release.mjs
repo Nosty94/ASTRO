@@ -141,6 +141,9 @@ console.log('\n== ПРОИЗВОДИТЕЛЬНОСТЬ (п.1.15 — нет фр�
   check('градиенты неба/земли кэшируются (не каждый кадр)', /_skyKey!==_skyKey|skyKey!==_skyKey/.test(src) && /hgKey!==_hgKey/.test(src));
   check('FPS-метр: тумблер в настройках + обработчик', /id="fps-toggle"/.test(src) && /\$\('fps-toggle'\)\.onclick/.test(src));
   check('FPS-метр: HUD-элемент + ключ локали fpsMeter', /id="fps-hud"/.test(src) && /data-i18n="fpsMeter"/.test(src));
+  check('вступительный экран: слои глубины (туманность/планета/2 слоя звёзд)', /class="s-nebula"/.test(src) && /class="s-planet"/.test(src) && /class="s-stars2"/.test(src));
+  { const nc = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+    check('вступительный экран: без backdrop-filter/mix-blend-mode', !/backdrop-filter\s*:/.test(nc) && !/mix-blend-mode\s*:/.test(nc)); }
 }
 
 console.log('\n== ЧИСТОТА КОДА (рекомендация 6.4) ==');
